@@ -1,5 +1,5 @@
-#include <string>
 #include "ProblemPaths.h"
+
 namespace config {
 	// path to file with vehicle routing problem
 	const std::string FILENAME = PROBLEM_A_N32_K5;
