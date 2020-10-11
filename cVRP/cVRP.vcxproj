@@ -140,6 +140,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cVRP.cpp" />
+    <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="Location.cpp" />
+    <ClCompile Include="NodeCoord.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="VehicleRoutingProblem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ErrorMessages.h" />
+    <ClInclude Include="Loader.h" />
+    <ClInclude Include="Location.h" />
+    <ClInclude Include="NodeCoord.h" />
+    <ClInclude Include="ProblemPaths.h" />
+    <ClInclude Include="VehicleRoutingProblem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
