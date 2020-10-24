@@ -5,8 +5,8 @@ Loader::Loader() {
   this->lines = std::vector<std::string>();
 }
 
-void Loader::readFile(std::string filename) {
-  std::ifstream file(filename);
+void Loader::readFile() {
+  std::ifstream file(config::FILENAME);
   try {
     if(file.is_open()) {
       std::string line;
@@ -59,8 +59,8 @@ void Loader::addLocations(VehicleRoutingProblem* vrp) {
       int id = stoi(split_line[0]);
       int x = stoi(split_line[1]);
       int y = stoi(split_line[2]);
-      NodeCoord* node_coord = new NodeCoord(id, x, y);
-      Location* loc = new Location(node_coord);
+      NodeCoord* node_coord = new NodeCoord(x, y);
+      Location* loc = new Location(id, node_coord);
       vrp->addLocation(loc);
     }
     if(line == NODE_CONTROL_WORD) {
