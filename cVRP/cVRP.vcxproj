@@ -150,6 +150,7 @@
     <ClCompile Include="VehicleRoutingProblem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Config.h" />
     <ClInclude Include="ErrorMessages.h" />
     <ClInclude Include="Evolution.h" />
     <ClInclude Include="Individual.h" />

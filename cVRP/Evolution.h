@@ -3,7 +3,7 @@
 #include "Individual.h"
 #include "Location.h"
 #include "VehicleRoutingProblem.h"
-#include "config.cpp"
+#include "Config.h"
 
 class Evolution {
 	public:
