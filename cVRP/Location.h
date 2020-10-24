@@ -3,10 +3,15 @@
 class Location
 {
 	public:
-		Location(NodeCoord* t_coords);
+		Location(int id, NodeCoord* t_coords);
 		void setDemands(int t_demand_resource);
+		int getDemands();
+		NodeCoord* getCoords();
+		int getId();
+		double countDistance(NodeCoord* t_coords);
 	private:
-		NodeCoord* coords = nullptr;
-		int resource_demand;
+		int m_id = 0;
+		NodeCoord* m_coords = nullptr;
+		int m_resource_demand;
 };
 

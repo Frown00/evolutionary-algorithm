@@ -3,12 +3,13 @@
 #include <fstream>
 #include "VehicleRoutingProblem.h"
 #include "ErrorMessages.h"
+#include "Evolution.h"
 
 class Loader
 {
 	public:
 		Loader();
-		void readFile(std::string filename);
+		void readFile();
 		VehicleRoutingProblem* getProblem();
 
 	private:
