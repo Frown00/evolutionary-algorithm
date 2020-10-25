@@ -1,11 +1,9 @@
 #pragma once
-#include <vector>
-#include <string>
 #include "NodeCoord.h"
 #include "Location.h"
 #include "utils.cpp"
 #include "Individual.h"
-
+#include "Summary.h"
 
 class VehicleRoutingProblem
 {
@@ -23,7 +21,10 @@ class VehicleRoutingProblem
 		int getCapacity();
 		int getDimension();
 		std::vector<Location*> getLocations();
-
+		void greedySolution();
+		double greedyAlghorithm(int depotId);
+		void randomSolution(int attempts);
+		double randomSolver();
 	private:
 		std::string m_name = "";
 		std::string m_type = "";
@@ -33,5 +34,7 @@ class VehicleRoutingProblem
 		int m_capacity = 0;
 		std::vector<Location*> m_locations;
 		Location* m_depot = nullptr;
+		std::vector<int> getLocationsIds(Location* t_depot);
+		Location* getLocationById(int t_id);
 };
 
