@@ -9,6 +9,10 @@ int main()
   Loader* loader = new Loader();
   loader->readFile();
   VehicleRoutingProblem* problem = loader->getProblem();
-  Evolution evolution = Evolution(problem);
-  evolution.createPopulation();
+  std::cout << "GREEDY SOLUTION";
+  problem->greedySolution();
+  std::cout << "\n\nRANDOM SOLUTION";
+  problem->randomSolution(100);
+  //Evolution evolution = Evolution(problem);
+  //evolution.createPopulation();
 }

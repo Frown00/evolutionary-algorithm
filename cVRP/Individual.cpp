@@ -1,6 +1,4 @@
 #include "Individual.h"
-#include <iostream>
-#include <string>
 
 Individual::Individual(int t_dimension) {
   m_dimension = t_dimension;
@@ -11,9 +9,9 @@ std::vector<int> Individual::getGenotype() {
     return m_genotype;
 }
 
-std::vector<int> Individual::getIds(int t_dimesion, int t_depot_id) {
+std::vector<int> Individual::getIds(int t_dimension, int t_depot_id) {
   std::vector<int> left_location_ids;
-  for(int i = 1; i <= t_dimesion; i++) {
+  for(int i = 1; i <= t_dimension; i++) {
     if(i != t_depot_id)
       left_location_ids.push_back(i);
   }
@@ -72,17 +70,17 @@ void Individual::fixGenotype(Location* t_depot, std::vector<Location*> t_locatio
       i--;
     }
   }
-  int currentWeight = 0;
+  int current_weight = 0;
   for(int i = 0; i < m_genotype.size(); i++) {
     if(m_genotype[i] == t_depot->getId()) {
-      currentWeight = 0;
+      current_weight = 0;
     }
     else {
       Location* loc = getLocationById(t_locations, m_genotype[i]);
-      currentWeight += loc->getDemands();
-      if(currentWeight > t_capacity) {
+      current_weight += loc->getDemands();
+      if(current_weight > t_capacity) {
         m_genotype.insert(m_genotype.begin() + i, t_depot->getId());
-        currentWeight = 0;
+        current_weight = 0;
       }
     }
   }
