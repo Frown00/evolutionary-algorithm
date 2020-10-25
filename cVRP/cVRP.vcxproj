@@ -143,9 +143,9 @@
     <ClCompile Include="Individual.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Loader.cpp" />
-    <ClCompile Include="config.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="NodeCoord.cpp" />
+    <ClCompile Include="Summary.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="VehicleRoutingProblem.cpp" />
   </ItemGroup>
@@ -158,6 +158,7 @@
     <ClInclude Include="Location.h" />
     <ClInclude Include="NodeCoord.h" />
     <ClInclude Include="ProblemPaths.h" />
+    <ClInclude Include="Summary.h" />
     <ClInclude Include="VehicleRoutingProblem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
