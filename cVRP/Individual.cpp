@@ -1,4 +1,5 @@
 #include "Individual.h"
+#include "Config.h"
 
 Individual::Individual(int t_dimension) {
   m_dimension = t_dimension;
@@ -29,6 +30,11 @@ void Individual::setRandomGenotype(Location* t_depot, std::vector<Location*> t_l
     left_location_ids.erase(left_location_ids.begin() + idx);
   }
   m_genotype.push_back(t_depot->getId());
+  // fill with random returns to depot
+  for(int i = 0; i < m_dimension; i++) {
+    int idx = rand() % m_genotype.size();
+    m_genotype.insert(m_genotype.begin() + idx, t_depot->getId());
+  }
   fixGenotype(t_depot, t_locations, t_capacity);
 }
 
@@ -51,6 +57,10 @@ double Individual::getFitness() {
   return m_fitness;
 }
 
+Individual* Individual::crossing(Individual* t_other_individual) {
+  return nullptr;
+}
+
 Location* Individual::getLocationById(std::vector<Location*> t_locations, int t_id) {
   for(int i = 0; i < t_locations.size(); i++) {
     if(t_locations[i]->getId() == t_id)
@@ -59,11 +69,6 @@ Location* Individual::getLocationById(std::vector<Location*> t_locations, int t_
 }
 
 void Individual::fixGenotype(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
-  int genotypeLength = m_genotype.size();
-  for(int i = 0; i < m_dimension; i++) {
-    int idx = rand() % genotypeLength;
-    m_genotype.insert(m_genotype.begin() + idx, t_depot->getId());
-  }
   for(int i = 0; i < m_genotype.size() - 1; i++) {
     if(m_genotype[i] == m_genotype[i + 1]) {
       m_genotype.erase(m_genotype.begin() + i);
@@ -84,6 +89,42 @@ void Individual::fixGenotype(Location* t_depot, std::vector<Location*> t_locatio
       }
     }
   }
+}
+
+void Individual::swapMutation(int t_gen1_pos, int t_gen2_pos) {
+  int temp = m_genotype[t_gen1_pos];
+  m_genotype[t_gen1_pos] = m_genotype[t_gen2_pos];
+  m_genotype[t_gen2_pos] = temp;
+}
+
+void Individual::inversionMutation(int t_gen1_pos, int t_gen2_pos) {
+  int swap_amount = (abs(t_gen1_pos - t_gen2_pos) + 1)/ 2;
+  int left = t_gen1_pos;
+  int right = t_gen2_pos;
+  if(t_gen1_pos > t_gen2_pos) {
+    left = t_gen2_pos;
+    right = t_gen1_pos;
+  }
+  for(int i = 0; i <= swap_amount; i++) {
+    swapMutation(left + i, right - i);
+  }
+}
+
+void Individual::mutate(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
+  int gen1_id = rand() % m_genotype.size();
+  int gen2_id = rand() % m_genotype.size();
+  switch(config::MUTATION_TYPE) {
+    case evolution::MutationType::SWAP: {
+      swapMutation(gen1_id, gen2_id);
+      break;
+    }
+    case evolution::MutationType::INVERSION: {
+      inversionMutation(gen1_id, gen2_id);
+      break;
+    }
+    default: break;
+  }
+  fixGenotype(t_depot, t_locations, t_capacity);
 }
 
 void Individual::printRouting(Location* t_depot) {

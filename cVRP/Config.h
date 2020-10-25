@@ -1,7 +1,9 @@
 #pragma once
 #include "ProblemPaths.h"
+#include "Evolution.h"
 
 namespace config {
+	using namespace evolution;
 	// path to file with vehicle routing problem
 	const std::string FILENAME = PROBLEM_A_N32_K5;
 
@@ -20,4 +22,8 @@ namespace config {
 	// used for tournament selection
 	// number of individuals participating in one tournament
 	const double TOUR = 5;
+
+	const MutationType MUTATION_TYPE = MutationType::SWAP;
+	const CrossoverType CROSSOVER_TYPE = CrossoverType::ORDERED;
+
 };

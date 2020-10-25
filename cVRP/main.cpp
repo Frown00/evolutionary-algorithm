@@ -3,6 +3,8 @@
 #include "Evolution.h"
 #include <time.h>
 
+using namespace evolution;
+
 int main()
 {
   srand((unsigned int)time(NULL));
@@ -12,7 +14,8 @@ int main()
   std::cout << "GREEDY SOLUTION";
   problem->greedySolution();
   std::cout << "\n\nRANDOM SOLUTION";
-  problem->randomSolution(100);
-  //Evolution evolution = Evolution(problem);
-  //evolution.createPopulation();
+  problem->randomSolution(10);
+  std::cout << rand() % 100;
+  Evolution evolution = Evolution(problem);
+  evolution.solve();
 }
