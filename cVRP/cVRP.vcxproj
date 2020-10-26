@@ -157,7 +157,7 @@
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Location.h" />
     <ClInclude Include="NodeCoord.h" />
-    <ClInclude Include="ProblemPaths.h" />
+    <ClInclude Include="ProblemNames.h" />
     <ClInclude Include="Summary.h" />
     <ClInclude Include="VehicleRoutingProblem.h" />
   </ItemGroup>

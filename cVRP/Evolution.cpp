@@ -10,12 +10,43 @@ Evolution::Evolution(VehicleRoutingProblem* t_problem) {
 	m_problem = t_problem;
 }
 
-void Evolution::solve() {
+void Evolution::solve(int t_test_num) {
 	createPopulation();
-	mutation();
-	crossover();
-	refreshFitness();
-	selection();
+	std::vector<std::vector<Summary*>> test_summary;
+	for(int t = 0; t < t_test_num; t++) {
+		std::cout << "EVOLUTION TEST: " << t + 1 << "\n";
+		std::vector<Summary*> generation_summaries;
+		for (int g = 1; g <= config::GEN; g++) {
+			std::cout << "\r" << "EVOLUTION PROGRESS: " << g << " / " << config::GEN;
+			Summary* summary = new Summary();
+			for (int i = 0; i < m_population.size(); i++) {
+				summary->addResult(stoi(std::to_string(g) + std::to_string(i)), m_population[i]->getFitness());
+			}
+			summary->countAverage();
+			summary->countStd();
+			generation_summaries.push_back(summary);
+			mutation();
+			crossover();
+			refreshFitness();
+			selection();
+		}
+		std::cout << "\nCOMPLETED\n";
+		test_summary.push_back(generation_summaries);
+	}
+	for(int g = 0; g < config::GEN; g++) {
+		Summary* overall = new Summary();
+		for(int j = 0; j < config::POP_SIZE; j++) {
+			double sum = 0;
+			for(int t = 0; t < test_summary.size(); t++) {
+				Summary* summary = test_summary[t][g];
+				sum += summary->getResult(j);
+			}
+			overall->addResult(0, sum / t_test_num);
+		}
+		overall->countAverage();
+		overall->countStd();
+		m_test_summaries.push_back(overall);
+	}
 }
 
 void Evolution::createPopulation() {
@@ -193,7 +224,7 @@ void evolution::Evolution::saveResults(Summary* t_greedy, Summary* t_random)
 		selection_type = "ROULETTE";
 		break;
 	}
-	std::string filename =
+	std::string filename = config::INSTANCE_PROBLEM + "-"
 		"POP" + std::to_string(config::POP_SIZE) + "-" +
 		"GEN" + std::to_string(config::GEN) + "-" +
 		crossover_name + std::to_string((int)config::P_X) + "-" +
@@ -201,6 +232,7 @@ void evolution::Evolution::saveResults(Summary* t_greedy, Summary* t_random)
 		selection_name;
 	myfile.open("./results/" + filename + ".csv");
 	myfile << "Constrained vehicle routing problem\n";
+	myfile << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
 	myfile << "Evolution parameters\n";
 	myfile << "Population size:;" + std::to_string(config::POP_SIZE) + "\n";
 	myfile << "Generation number:;" + std::to_string(config::GEN) + "\n";
@@ -214,14 +246,26 @@ void evolution::Evolution::saveResults(Summary* t_greedy, Summary* t_random)
 		myfile << "\n";
 	}
 	myfile << "\nGreedy solution\n";
-	myfile << "Best;Worst;Average\n";
+	myfile << "Best;Worst;Average;Std\n";
 	myfile << std::to_string(t_greedy->getBest()) + ";" +
 		std::to_string(t_greedy->getWorst()) + ";" +
-		std::to_string(t_greedy->getAverage()) + "\n";
+		std::to_string(t_greedy->getAverage()) + ";" +
+		std::to_string(t_greedy->getStd()) + "\n";
 	myfile << "\nRandom solution\n";
-	myfile << "Best;Worst;Average\n";
+	myfile << "Best;Worst;Average;Std\n";
 	myfile << std::to_string(t_random->getBest()) + ";" +
 		std::to_string(t_random->getWorst()) + ";" +
-		std::to_string(t_random->getAverage()) + "\n";
+		std::to_string(t_random->getAverage()) + ";" +
+		std::to_string(t_random->getStd()) + "\n";
+	myfile << "\nEvolution solution\n";
+	myfile << "Generation;Best;Worst;Average;Std\n";
+	for(int g = 0; g < m_test_summaries.size(); g++) {
+		myfile << 
+			std::to_string(g) + ";" +
+			std::to_string(m_test_summaries[g]->getBest()) + ";" +
+			std::to_string(m_test_summaries[g]->getWorst()) + ";" +
+			std::to_string(m_test_summaries[g]->getAverage()) + ";" +
+			std::to_string(m_test_summaries[g]->getStd()) + "\n";
+	}
 	myfile.close();
 }
