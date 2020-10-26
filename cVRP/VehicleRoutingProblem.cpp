@@ -68,6 +68,8 @@ Summary* VehicleRoutingProblem::greedySolution() {
 		double greedyResult = greedyAlghorithm(m_locations[i]->getId());
 		summary->addResult(m_locations[i]->getId(), greedyResult);
 	}
+	summary->countAverage();
+	summary->countStd();
 	return summary;
 }
 
@@ -122,6 +124,8 @@ Summary* VehicleRoutingProblem::randomSolution(int attempts) {
 		double greedyResult = randomSolver();
 		summary->addResult(i, greedyResult);
 	}
+	summary->countAverage();
+	summary->countStd();
 	return summary;
 }
 

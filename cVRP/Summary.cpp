@@ -31,6 +31,11 @@ void Summary::addResult(int t_id, double t_result) {
 	}
 }
 
+double Summary::getResult(int id)
+{
+	return m_results[id];
+}
+
 void Summary::print() {
 	std::cout << "\nBEST: " << m_best << " ID: " << m_best_id;
 	std::cout << "\nWORST: " << m_worst << " ID: " << m_worst_id;
@@ -51,4 +56,9 @@ double Summary::getWorst()
 double Summary::getAverage()
 {
 	return countAverage();
+}
+
+double Summary::getStd()
+{
+	return m_std;
 }

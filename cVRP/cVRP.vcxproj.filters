@@ -50,9 +50,6 @@
     <ClInclude Include="ErrorMessages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProblemPaths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VehicleRoutingProblem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Summary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProblemNames.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,8 +12,7 @@ namespace evolution {
 
 	const enum class CrossoverType {
 		ORDERED = 0,
-		PARTIALLY_MATCHED = 1,
-		CYCLE = 2
+		CYCLE = 1
 	};
 
 	const enum class SelectionType {
@@ -24,10 +23,10 @@ namespace evolution {
 	class Evolution {
 	public:
 		Evolution(VehicleRoutingProblem* t_problem);
-		void solve();
+		void solve(int t_test_num);
 		void saveResults(Summary* t_greedy, Summary* t_random);
 	private:
-		std::vector<Summary*> m_generation_summaries;
+		std::vector<Summary*> m_test_summaries;
 		void createPopulation();
 		void mutation();
 		void crossover();

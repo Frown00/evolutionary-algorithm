@@ -7,10 +7,13 @@ class Summary {
 		double countAverage();
 		double countStd();
 		void addResult(int id, double t_result);
+		double getResult(int id);
+
 		void print();
 		double getBest();
 		double getWorst();
 		double getAverage();
+		double getStd();
 
 	private:
 		std::vector<double> m_results;
