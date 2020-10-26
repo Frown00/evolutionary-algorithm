@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace utils {
   inline std::string trim(const std::string& s) {
@@ -27,5 +28,14 @@ namespace utils {
       prev = pos + delim.length();
     } while (pos < str.length() && prev < str.length());
     return tokens;
+  }
+
+  inline int find_index(std::vector<int> vector, int element) {
+    for(int i = 0; i < vector.size(); i++) {
+      if(vector[i] == element) {
+        return i;
+      }
+    }
+    return -1;
   }
 }
