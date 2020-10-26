@@ -111,15 +111,15 @@ void Individual::inversionMutation(int t_gen1_pos, int t_gen2_pos) {
 }
 
 void Individual::mutate(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
-  int gen1_id = rand() % m_genotype.size();
-  int gen2_id = rand() % m_genotype.size();
+  int gen1_pos = (rand() % (m_genotype.size() - 1)) + 1;
+  int gen2_pos = (rand() % (m_genotype.size() - 1)) + 1;
   switch(config::MUTATION_TYPE) {
     case evolution::MutationType::SWAP: {
-      swapMutation(gen1_id, gen2_id);
+      swapMutation(gen1_pos, gen2_pos);
       break;
     }
     case evolution::MutationType::INVERSION: {
-      inversionMutation(gen1_id, gen2_id);
+      inversionMutation(gen1_pos, gen2_pos);
       break;
     }
     default: break;
