@@ -25,7 +25,9 @@ namespace evolution {
 	public:
 		Evolution(VehicleRoutingProblem* t_problem);
 		void solve();
+		void saveResults(Summary* t_greedy, Summary* t_random);
 	private:
+		std::vector<Summary*> m_generation_summaries;
 		void createPopulation();
 		void mutation();
 		void crossover();

@@ -8,6 +8,10 @@ class Summary {
 		double countStd();
 		void addResult(int id, double t_result);
 		void print();
+		double getBest();
+		double getWorst();
+		double getAverage();
+
 	private:
 		std::vector<double> m_results;
 		double m_best = INFINITY;

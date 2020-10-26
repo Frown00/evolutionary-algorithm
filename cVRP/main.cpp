@@ -12,10 +12,11 @@ int main()
   loader->readFile();
   VehicleRoutingProblem* problem = loader->getProblem();
   std::cout << "GREEDY SOLUTION";
-  problem->greedySolution();
+  Summary* greedy = problem->greedySolution();
   std::cout << "\n\nRANDOM SOLUTION";
-  problem->randomSolution(10);
+  Summary* random = problem->randomSolution(10);
   std::cout << rand() % 100;
   Evolution evolution = Evolution(problem);
   evolution.solve();
+  evolution.saveResults(greedy, random);
 }
