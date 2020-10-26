@@ -16,6 +16,11 @@ namespace evolution {
 		CYCLE = 2
 	};
 
+	const enum class SelectionType {
+		TOURNAMENT = 0,
+		ROULETTE = 1
+	};
+
 	class Evolution {
 	public:
 		Evolution(VehicleRoutingProblem* t_problem);
@@ -24,6 +29,9 @@ namespace evolution {
 		void createPopulation();
 		void mutation();
 		void crossover();
+		void tournamentSelection();
+		void rouletteSelection();
+		void selection();
 		void refreshFitness();
 		VehicleRoutingProblem* m_problem;
 		std::vector<Individual*> m_population;
