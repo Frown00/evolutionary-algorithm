@@ -10,6 +10,12 @@ std::vector<int> Individual::getGenotype() {
     return m_genotype;
 }
 
+void Individual::setGenotype(std::vector<int> t_genotype) {
+  for(int i = 0; i < t_genotype.size(); i++) {
+    m_genotype.push_back(t_genotype[i]);
+  }
+}
+
 std::vector<int> Individual::getIds(int t_dimension, int t_depot_id) {
   std::vector<int> left_location_ids;
   for(int i = 1; i <= t_dimension; i++) {
@@ -57,9 +63,7 @@ double Individual::getFitness() {
   return m_fitness;
 }
 
-Individual* Individual::crossing(Individual* t_other_individual) {
-  return nullptr;
-}
+
 
 Location* Individual::getLocationById(std::vector<Location*> t_locations, int t_id) {
   for(int i = 0; i < t_locations.size(); i++) {
@@ -89,6 +93,16 @@ void Individual::fixGenotype(Location* t_depot, std::vector<Location*> t_locatio
       }
     }
   }
+}
+
+std::vector<int> Individual::getPlainGenotype(Location* t_depot) {
+  std::vector<int> plain_genotype;
+  for(int i = 0; i < m_genotype.size(); i++) {
+    if(m_genotype[i] != t_depot->getId()) {
+      plain_genotype.push_back(m_genotype[i]);
+    }
+  }
+  return plain_genotype;
 }
 
 void Individual::swapMutation(int t_gen1_pos, int t_gen2_pos) {
@@ -125,6 +139,108 @@ void Individual::mutate(Location* t_depot, std::vector<Location*> t_locations, i
     default: break;
   }
   fixGenotype(t_depot, t_locations, t_capacity);
+}
+
+std::vector<std::vector<int>> Individual::cycleCrossover(Individual* t_other_individual, Location* t_depot) {
+  std::vector<int> cycle;
+  std::vector<int> parent1 = getPlainGenotype(t_depot);
+  std::vector<int> parent2 = t_other_individual->getPlainGenotype(t_depot);
+  std::vector<int> child1_genotype, child2_genotype;
+  int pos = 0;
+  int first_in_cycle = parent1[0];
+  cycle.push_back(first_in_cycle); // first is a depot (start point)
+  while(parent1.size() > pos) {
+    int index = utils::find_index(parent2, cycle[pos]);
+    int gen = parent1[index];
+    if(gen == first_in_cycle) break;
+    cycle.push_back(gen);
+    pos++;
+  }
+  // crossover
+  for(int i = 0; i < parent1.size(); i++) {
+    if(utils::find_index(cycle, parent1[i]) != -1) {
+      child1_genotype.push_back(parent2[i]);
+      child2_genotype.push_back(parent1[i]);
+    }
+    else {
+      child1_genotype.push_back(parent1[i]);
+      child2_genotype.push_back(parent2[i]);
+    }
+  }
+  // set returns to depot according to their parents
+  for(int i = 0; i < m_genotype.size(); i++) {
+    if(m_genotype[i] == t_depot->getId()) {
+      child1_genotype.insert(child1_genotype.begin() + i, m_genotype[i]);
+    }
+  }
+  std::vector<int> partner_genotype = t_other_individual->getGenotype();
+  for(int i = 0; i < partner_genotype.size(); i++) {
+    if(partner_genotype[i] == t_depot->getId()) {
+      child2_genotype.insert(child2_genotype.begin() + i, partner_genotype[i]);
+    }
+  }
+  return std::vector<std::vector<int>> { child1_genotype, child2_genotype };
+}
+
+std::vector<std::vector<int>> Individual::orderedCrossover(Individual* t_other_individual, Location* t_depot) {
+  std::vector<int> parent1 = getPlainGenotype(t_depot);
+  std::vector<int> parent2 = t_other_individual->getPlainGenotype(t_depot);
+  std::vector<int> child1_genotype, child2_genotype;
+  int cross_point1 = rand() % parent1.size();
+  int cross_point2 = parent2.size() - cross_point1;
+  for(int i = 0; i < parent1.size(); i++) {
+    if(i <= cross_point1) {
+      child1_genotype.push_back(parent1[i]);
+    }
+    else {
+      child1_genotype.push_back(parent2[i - cross_point1 - 1]);
+    }
+    if(i <= cross_point2) {
+      child2_genotype.push_back(parent2[i]);
+    }
+    else {
+      child2_genotype.push_back(parent1[i - cross_point2 - 1]);
+    }
+  }
+  // set returns to depot according to their parents
+  for(int i = 0; i < m_genotype.size(); i++) {
+    if(m_genotype[i] == t_depot->getId()) {
+      child1_genotype.insert(child1_genotype.begin() + i, m_genotype[i]);
+    }
+  }
+  std::vector<int> partner_genotype = t_other_individual->getGenotype();
+  for(int i = 0; i < partner_genotype.size(); i++) {
+    if(partner_genotype[i] == t_depot->getId()) {
+      child2_genotype.insert(child2_genotype.begin() + i, partner_genotype[i]);
+    }
+  }
+  return std::vector<std::vector<int>> { child1_genotype, child2_genotype };
+}
+
+std::vector<Individual*> Individual::crossover(
+  Location* t_depot,
+  std::vector<Location*> t_locations,
+  int t_capacity,
+  Individual* t_other_individual
+) {
+  std::vector<std::vector<int>> child_genotypes;
+  switch(config::CROSSOVER_TYPE) {
+    case evolution::CrossoverType::ORDERED:
+      child_genotypes = orderedCrossover(t_other_individual, t_depot);
+    case evolution::CrossoverType::CYCLE:
+      child_genotypes = cycleCrossover(t_other_individual, t_depot);
+      break;
+    default:
+      // error in config
+      break;
+  }
+  Individual* child1 = new Individual(m_dimension);
+  Individual* child2 = new Individual(m_dimension);
+  child1->setGenotype(child_genotypes[0]);
+  child1->fixGenotype(t_depot, t_locations, t_capacity);
+  child2->setGenotype(child_genotypes[1]);
+  child2->fixGenotype(t_depot, t_locations, t_capacity);
+  return std::vector<Individual*> { child1, child2 };
 }
 
 void Individual::printRouting(Location* t_depot) {
