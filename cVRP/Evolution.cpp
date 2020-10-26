@@ -11,7 +11,8 @@ Evolution::Evolution(VehicleRoutingProblem* t_problem) {
 void Evolution::solve() {
 	createPopulation();
 	mutation();
-	//crossover();
+	crossover();
+	refreshFitness();
 	//selection();
 }
 
@@ -43,4 +44,30 @@ void Evolution::mutation() {
 }
 
 void Evolution::crossover() {
+	for(int i = 0; i < m_population.size(); i++) {
+		int parent1_id = rand() % m_population.size();
+		int parent2_id = parent1_id;
+		while(parent2_id == parent1_id) {
+			parent2_id = rand() % m_population.size();
+		}
+		Individual* parent1 = m_population[parent1_id];
+		Individual* parent2 = m_population[parent2_id];
+
+		int chance = rand() % 100;
+		if(chance < config::P_X) {
+			parent1->crossover(
+				m_problem->getDepot(),
+				m_problem->getLocations(),
+				m_problem->getCapacity(),
+				parent2
+			);
+		}
+	}
+}
+
+void evolution::Evolution::refreshFitness()
+{
+	for(int i = 0; i < m_population.size(); i++) {
+		m_population[i]->countFitness(m_problem->getDepot(), m_problem->getLocations());
+	}
 }

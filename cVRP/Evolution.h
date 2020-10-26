@@ -24,6 +24,7 @@ namespace evolution {
 		void createPopulation();
 		void mutation();
 		void crossover();
+		void refreshFitness();
 		VehicleRoutingProblem* m_problem;
 		std::vector<Individual*> m_population;
 
