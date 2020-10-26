@@ -37,3 +37,18 @@ void Summary::print() {
 	std::cout << "\nAVERAGE: " << countAverage() << " RESULTS: " << m_results.size();
 	std::cout << "\nSTD: " << countStd();
 }
+
+double Summary::getBest()
+{
+	return m_best;
+}
+
+double Summary::getWorst()
+{
+	return m_worst;
+}
+
+double Summary::getAverage()
+{
+	return countAverage();
+}

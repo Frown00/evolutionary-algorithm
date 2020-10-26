@@ -21,9 +21,9 @@ class VehicleRoutingProblem
 		int getCapacity();
 		int getDimension();
 		std::vector<Location*> getLocations();
-		void greedySolution();
+		Summary* greedySolution();
 		double greedyAlghorithm(int depotId);
-		void randomSolution(int attempts);
+		Summary* randomSolution(int attempts);
 		double randomSolver();
 	private:
 		std::string m_name = "";

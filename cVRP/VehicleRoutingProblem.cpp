@@ -62,13 +62,13 @@ std::vector<Location*> VehicleRoutingProblem::getLocations()
 	return m_locations;
 }
 
-void VehicleRoutingProblem::greedySolution() {
+Summary* VehicleRoutingProblem::greedySolution() {
 	Summary* summary = new Summary();
 	for(int i = 0; i < m_locations.size(); i++) {
 		double greedyResult = greedyAlghorithm(m_locations[i]->getId());
 		summary->addResult(m_locations[i]->getId(), greedyResult);
 	}
-	summary->print();
+	return summary;
 }
 
 double VehicleRoutingProblem::greedyAlghorithm(int depotId) {
@@ -116,13 +116,13 @@ double VehicleRoutingProblem::greedyAlghorithm(int depotId) {
 	return fitness;
 }
 
-void VehicleRoutingProblem::randomSolution(int attempts) {
+Summary* VehicleRoutingProblem::randomSolution(int attempts) {
 	Summary* summary = new Summary();
 	for(int i = 0; i < attempts; i++) {
 		double greedyResult = randomSolver();
 		summary->addResult(i, greedyResult);
 	}
-	summary->print();
+	return summary;
 }
 
 double VehicleRoutingProblem::randomSolver() {
