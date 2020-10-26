@@ -20,10 +20,10 @@ namespace config {
 	const double P_M = 10;
 
 	// used for tournament selection
-	// number of individuals participating in one tournament
+	// percent of current population which participate in one tournament
 	const double TOUR = 5;
 
 	const MutationType MUTATION_TYPE = MutationType::SWAP;
 	const CrossoverType CROSSOVER_TYPE = CrossoverType::ORDERED;
-
+	const SelectionType SELECTION_TYPE = SelectionType::ROULETTE;
 };
