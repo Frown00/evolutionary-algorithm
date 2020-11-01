@@ -126,8 +126,8 @@ double VehicleRoutingProblem::greedyAlghorithm(int first) {
 Summary* VehicleRoutingProblem::randomSolution(int attempts) {
 	Summary* summary = new Summary();
 	for(int i = 0; i < attempts; i++) {
-		double greedyResult = randomSolver();
-		summary->addResult(i, greedyResult);
+		double result = randomSolver();
+		summary->addResult(i, result);
 	}
 	summary->countAverage();
 	summary->countStd();
@@ -135,10 +135,45 @@ Summary* VehicleRoutingProblem::randomSolution(int attempts) {
 }
 
 double VehicleRoutingProblem::randomSolver() {
-	Individual* individual = new Individual(m_dimension);
-	individual->setRandomGenotype(m_depot, m_locations, m_capacity);
-	double result = individual->countFitness(m_depot, m_locations);
-	return result;
+	int current_weight = 0;
+	double fitness = 0;
+
+	Location* depot = getDepot();
+	Location* current_location = depot;
+	Location* next_location = nullptr;
+	std::vector<int> locations_left = getLocationsIds(depot);
+	for(int i = 0; i < m_dimension - 1; i++) {
+		int next_loc_id = -1;
+		next_location = nullptr;
+		for(int j = 0; j < locations_left.size(); j++) {
+			int randomId = rand() % locations_left.size();
+			Location* location = getLocationById(locations_left[randomId]);
+			bool overweighted = current_weight + location->getDemands() > m_capacity;
+			if(!overweighted) {
+				fitness += current_location->countDistance(location->getCoords());
+				next_loc_id = j;
+				next_location = location;
+				break;
+			}
+		}
+		// overweighted
+		if(next_location == nullptr) {
+			double distance_to_depot = current_location->countDistance(depot->getCoords());
+			fitness += distance_to_depot; // return to depot
+			current_weight = 0;
+			next_location = depot;
+			/*std::cout << "\n" << current_location->getId() << " -> " << next_location->getId() << " = ";
+			std::cout << distance_to_depot;*/
+		}
+		else {
+			locations_left.erase(locations_left.begin() + next_loc_id);
+			current_weight += next_location->getDemands();
+			/*std::cout << "\n" << current_location->getId() << " -> " << next_location->getId() << " = ";
+			std::cout << shortest_distanse << " || " << current_weight << " / " << m_capacity;*/
+		}
+		current_location = next_location;
+	}
+	return fitness;
 }
 
 std::vector<int> VehicleRoutingProblem::getLocationsIds(Location* t_depot) {
