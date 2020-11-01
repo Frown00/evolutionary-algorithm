@@ -185,33 +185,58 @@ std::vector<std::vector<int>> Individual::cycleCrossover(Individual* t_other_ind
 std::vector<std::vector<int>> Individual::orderedCrossover(Individual* t_other_individual, Location* t_depot) {
   std::vector<int> parent1 = getPlainGenotype(t_depot);
   std::vector<int> parent2 = t_other_individual->getPlainGenotype(t_depot);
-  std::vector<int> child1_genotype, child2_genotype;
+  std::vector<int> child1_genotype, child2_genotype = std::vector<int>();
+  child1_genotype.resize(parent1.size());
+  child2_genotype.resize(parent2.size());
   int cross_point1 = rand() % parent1.size();
-  int cross_point2 = parent2.size() - cross_point1;
+  int cross_point2 = rand() % parent1.size();
+  int min_constr = cross_point1;
+  int max_constr = cross_point2;
+  if(min_constr > max_constr) {
+    int temp = min_constr;
+    min_constr = max_constr;
+    max_constr = min_constr;
+  }
+  std::vector<int> values_in_section;
+  std::vector<int> values_out_section;
   for(int i = 0; i < parent1.size(); i++) {
-    if(i <= cross_point1) {
-      child1_genotype.push_back(parent1[i]);
+    int gen = parent1[i];
+    if(i >= min_constr && i <= max_constr) {
+      values_in_section.push_back(gen);
     }
     else {
-      child1_genotype.push_back(parent2[i - cross_point1 - 1]);
+      values_out_section.push_back(gen);
     }
-    if(i <= cross_point2) {
-      child2_genotype.push_back(parent2[i]);
+  }
+  int offset = 0;
+  for(int i = 0; i < parent1.size(); i++) {
+    if(i >= min_constr && i <= max_constr) {
+      child1_genotype[i] = parent1[i];
     }
     else {
-      child2_genotype.push_back(parent1[i - cross_point2 - 1]);
+      int local_offset = -1;
+      for(int j = 0; j < parent2.size(); j++) {
+        int found = utils::find_index(values_in_section, parent2[j]);
+        if(found == -1) {
+          local_offset++;
+        }
+        if(offset == local_offset) {
+          child1_genotype[i] = parent2[j];
+          offset++;
+          break;
+        }
+      }
     }
   }
-  // set returns to depot according to their parents
-  for(int i = 0; i < m_genotype.size(); i++) {
-    if(m_genotype[i] == t_depot->getId()) {
-      child1_genotype.insert(child1_genotype.begin() + i, m_genotype[i]);
+  for (int i = 0; i < parent2.size(); i++) {
+    int gen = parent2[i];
+    int found = utils::find_index(values_out_section, gen);
+    if(found != -1) {
+      child2_genotype[i] = values_out_section[0];
+      values_out_section.erase(values_out_section.begin());
     }
-  }
-  std::vector<int> partner_genotype = t_other_individual->getGenotype();
-  for(int i = 0; i < partner_genotype.size(); i++) {
-    if(partner_genotype[i] == t_depot->getId()) {
-      child2_genotype.insert(child2_genotype.begin() + i, partner_genotype[i]);
+    else {
+      child2_genotype[i] = parent2[i];
     }
   }
   return std::vector<std::vector<int>> { child1_genotype, child2_genotype };
