@@ -64,23 +64,28 @@ std::vector<Location*> VehicleRoutingProblem::getLocations()
 
 Summary* VehicleRoutingProblem::greedySolution() {
 	Summary* summary = new Summary();
-	for(int i = 0; i < m_locations.size(); i++) {
-		double greedyResult = greedyAlghorithm(m_locations[i]->getId());
-		summary->addResult(m_locations[i]->getId(), greedyResult);
+	for(int loc = 0; loc < m_locations.size() - 1; loc++) {
+		double greedyResult = greedyAlghorithm(loc);
+		summary->addResult(m_locations[loc]->getId(), greedyResult);
 	}
 	summary->countAverage();
 	summary->countStd();
 	return summary;
 }
 
-double VehicleRoutingProblem::greedyAlghorithm(int depotId) {
+double VehicleRoutingProblem::greedyAlghorithm(int first) {
 	int current_weight = 0;
 	double fitness = 0;
-	Location* depot = getLocationById(depotId);
-	Location* current_location = depot;
-	Location* next_location = nullptr;
+	Location* depot = getDepot();
 	std::vector<int> locations_left = getLocationsIds(depot);
-	for(int i = 0; i < m_dimension - 1; i++) {
+	Location* current_location = depot;
+	Location* next_location = getLocationById(locations_left[first]);
+	double distance = current_location->countDistance(next_location->getCoords());
+	fitness += distance;
+	current_location = next_location;
+	current_weight += current_location->getDemands();
+	locations_left.erase(locations_left.begin() + first);
+	for(int i = 0; i < m_dimension - 2; i++) {
 		double shortest_distanse = INFINITY;
 		int shortest = -1;
 		next_location = nullptr;
