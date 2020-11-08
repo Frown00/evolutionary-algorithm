@@ -32,7 +32,7 @@ class VehicleRoutingProblem
 		int m_dimension = 0;
 		std::string m_edge_weight_type = "";
 		int m_capacity = 0;
-		std::vector<Location*> m_locations;
+		std::vector<Location*> m_locations = std::vector<Location*>();
 		Location* m_depot = nullptr;
 		std::vector<int> getLocationsIds(Location* t_depot);
 		Location* getLocationById(int t_id);
