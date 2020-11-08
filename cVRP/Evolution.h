@@ -3,6 +3,7 @@
 #include "Individual.h"
 #include "Location.h"
 #include "VehicleRoutingProblem.h"
+#include "Experiment.h"
 
 namespace evolution {
 	const enum class MutationType {
@@ -21,21 +22,21 @@ namespace evolution {
 	};
 
 	class Evolution {
-	public:
-		Evolution(VehicleRoutingProblem* t_problem);
-		void solve(int t_test_num);
-		void saveResults(Summary* t_greedy, Summary* t_random);
-	private:
-		std::vector<Summary*> m_test_summaries;
-		void createPopulation();
-		void mutation();
-		void crossover();
-		void tournamentSelection();
-		void rouletteSelection();
-		void selection();
-		void refreshFitness();
-		VehicleRoutingProblem* m_problem;
-		std::vector<Individual*> m_population;
+	
+		public:
+			Evolution(VehicleRoutingProblem* t_problem);
+			std::vector<Summary*> solve(int t_test_num);
+	
+		private:
+			void createPopulation();
+			void mutation();
+			void crossover();
+			void tournamentSelection();
+			void rouletteSelection();
+			void selection();
+			void refreshFitness();
+			VehicleRoutingProblem* m_problem;
+			std::vector<Individual*> m_population;
 
 	};
 }
