@@ -6,8 +6,23 @@ Individual::Individual(int t_dimension) {
   m_fitness = -1;
 }
 
+Individual::~Individual()
+{
+  std::cout << "\nINDIVIDUAL DEST\n";
+}
+
 std::vector<int> Individual::getGenotype() {
     return m_genotype;
+}
+
+std::string Individual::getTextGenotype()
+{
+  std::string genotype = "";
+  for(int i = 0; i < m_genotype.size(); i++) {
+    genotype += std::to_string(m_genotype[i]);
+    genotype += " ";
+  }
+  return genotype;
 }
 
 void Individual::setGenotype(std::vector<int> t_genotype) {
@@ -63,8 +78,6 @@ double Individual::getFitness() {
   return m_fitness;
 }
 
-
-
 Location* Individual::getLocationById(std::vector<Location*> t_locations, int t_id) {
   for(int i = 0; i < t_locations.size(); i++) {
     if(t_locations[i]->getId() == t_id)
@@ -73,6 +86,11 @@ Location* Individual::getLocationById(std::vector<Location*> t_locations, int t_
 }
 
 void Individual::fixGenotype(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
+  if(m_genotype[0] != t_depot->getId())
+    m_genotype.insert(m_genotype.begin() + 0, t_depot->getId());
+  if(m_genotype[m_genotype.size() - 1] != t_depot->getId())
+    m_genotype.insert(m_genotype.begin() + m_genotype.size(), t_depot->getId());
+  // clear depot after depot
   for(int i = 0; i < m_genotype.size() - 1; i++) {
     if(m_genotype[i] == m_genotype[i + 1]) {
       m_genotype.erase(m_genotype.begin() + i);
@@ -150,7 +168,7 @@ std::vector<std::vector<int>> Individual::cycleCrossover(Individual* t_other_ind
   int first_in_cycle = parent1[0];
   cycle.push_back(first_in_cycle); // first is a depot (start point)
   while(parent1.size() > pos) {
-    int index = utils::find_index(parent2, cycle[pos]);
+    int index = utils::findIndex(parent2, cycle[pos]);
     int gen = parent1[index];
     if(gen == first_in_cycle) break;
     cycle.push_back(gen);
@@ -158,7 +176,7 @@ std::vector<std::vector<int>> Individual::cycleCrossover(Individual* t_other_ind
   }
   // crossover
   for(int i = 0; i < parent1.size(); i++) {
-    if(utils::find_index(cycle, parent1[i]) != -1) {
+    if(utils::findIndex(cycle, parent1[i]) != -1) {
       child1_genotype.push_back(parent2[i]);
       child2_genotype.push_back(parent1[i]);
     }
@@ -216,7 +234,7 @@ std::vector<std::vector<int>> Individual::orderedCrossover(Individual* t_other_i
     else {
       int local_offset = -1;
       for(int j = 0; j < parent2.size(); j++) {
-        int found = utils::find_index(values_in_section, parent2[j]);
+        int found = utils::findIndex(values_in_section, parent2[j]);
         if(found == -1) {
           local_offset++;
         }
@@ -230,7 +248,7 @@ std::vector<std::vector<int>> Individual::orderedCrossover(Individual* t_other_i
   }
   for (int i = 0; i < parent2.size(); i++) {
     int gen = parent2[i];
-    int found = utils::find_index(values_out_section, gen);
+    int found = utils::findIndex(values_out_section, gen);
     if(found != -1) {
       child2_genotype[i] = values_out_section[0];
       values_out_section.erase(values_out_section.begin());
