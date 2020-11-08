@@ -7,7 +7,9 @@
 class Individual {
 	public:
 		Individual(int t_dimension);
+		~Individual();
 		std::vector<int> getGenotype();
+		std::string getTextGenotype();
 		void setGenotype(std::vector<int> t_genotype);
 		std::vector<int> getPlainGenotype(Location* t_depot); // without returns to depot station
 		void setRandomGenotype(Location* t_depot, std::vector<Location*> t_locations, int t_capacity);
