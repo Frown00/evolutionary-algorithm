@@ -1,6 +1,10 @@
 #include "Location.h"
 #include <cmath>
 
+Location::Location()
+{
+}
+
 Location::Location(int t_id, NodeCoord* t_coords)
 {
 	m_id = t_id;

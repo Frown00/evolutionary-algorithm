@@ -3,6 +3,7 @@
 class Location
 {
 	public:
+		Location();
 		Location(int id, NodeCoord* t_coords);
 		void setDemands(int t_demand_resource);
 		int getDemands();

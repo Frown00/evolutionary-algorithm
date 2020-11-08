@@ -30,7 +30,7 @@ namespace utils {
     return tokens;
   }
 
-  inline int find_index(std::vector<int> vector, int element) {
+  inline int findIndex(std::vector<int> vector, int element) {
     for(int i = 0; i < vector.size(); i++) {
       if(vector[i] == element) {
         return i;
