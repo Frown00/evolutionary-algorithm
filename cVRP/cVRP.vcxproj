@@ -147,6 +147,7 @@
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="NodeCoord.cpp" />
     <ClCompile Include="Summary.cpp" />
+    <ClCompile Include="TabuSearch.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="VehicleRoutingProblem.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="NodeCoord.h" />
     <ClInclude Include="ProblemNames.h" />
     <ClInclude Include="Summary.h" />
+    <ClInclude Include="TabuSearch.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="VehicleRoutingProblem.h" />
     <ClInclude Include="Writer.h" />
