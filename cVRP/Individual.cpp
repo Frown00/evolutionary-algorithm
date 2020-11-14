@@ -6,6 +6,14 @@ Individual::Individual(int t_dimension) {
   m_fitness = -1;
 }
 
+Individual::Individual(Individual* other)
+{
+  m_genotype = other->m_genotype;
+  m_fitness = other->m_fitness;
+  m_dimension = other->m_dimension;
+
+}
+
 Individual::~Individual()
 {
   std::cout << "\nINDIVIDUAL DEST\n";
@@ -296,10 +304,11 @@ void Individual::printRouting(Location* t_depot) {
     }
     else {
       std::cout << m_genotype[i];
-      if(m_genotype[i + 1] != t_depot->getId()) {
+      int next = i + 1;
+      if(m_genotype[next] != t_depot->getId()) {
         std::cout << " -> ";
       }
     }
   }
-  std::cout << '\n' << "FITNESS: " << m_fitness;
+  std::cout << '\n' << "FITNESS: " << getFitness();
 }
