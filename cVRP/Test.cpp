@@ -7,12 +7,15 @@ Test::Test(int id)
 
 void Test::addSummary(Summary* t_summary)
 {
-	if(m_best_route == nullptr) {
-		m_best_route = t_summary->getBestRoute();
-	}
-	else {
-		if(t_summary->getBestRoute()->getFitness() < m_best_route->getFitness()) {
+	if(t_summary->getBestRoute() != nullptr) {
+		if(m_best_route == nullptr) {
 			m_best_route = t_summary->getBestRoute();
+		}
+		else {
+			bool better = t_summary->getBestRoute()->getFitness() < m_best_route->getFitness();
+			if(better) {
+				m_best_route = new Individual(t_summary->getBestRoute());
+			}
 		}
 	}
 	m_summaries.push_back(t_summary);
