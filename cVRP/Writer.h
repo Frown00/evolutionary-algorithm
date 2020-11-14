@@ -6,6 +6,15 @@
 class Writer
 {
 	public:
-		void saveResults(Summary* t_greedy, Summary* t_random, std::vector<Summary*> evolution);
+		void openEvolutionFile();
+		void openTabuFile();
+		void saveGreedy(Summary* t_greedy);
+		void saveRandom(Summary* t_random);
+		void saveEvolution(std::vector<Summary*> t_evolution);
+		void saveTabu(std::vector<Summary*> t_tabu);
+		void close();
+	
+	private:
+		std::ofstream m_file;
 };
 
