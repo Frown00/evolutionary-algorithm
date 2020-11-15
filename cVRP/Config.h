@@ -5,14 +5,14 @@
 namespace config {
 	using namespace evolution;
 	// path to file with vehicle routing problem
-	const std::string INSTANCE_PROBLEM = PROBLEM_A_N32_K5;
+	const std::string INSTANCE_PROBLEM = PROBLEM_A_N45_K6;
 	const std::string FILENAME = "./problems/" + INSTANCE_PROBLEM + ".vrp";
 
 	// population size
 	const int POP_SIZE = 100;
 
 	// generations amount
-	const int GEN = 50;
+	const int GEN = 100;
 
 	// percent chance for crossing
 	const double P_X = 70;
@@ -27,4 +27,9 @@ namespace config {
 	const MutationType MUTATION_TYPE = MutationType::SWAP;
 	const CrossoverType CROSSOVER_TYPE = CrossoverType::ORDERED;
 	const SelectionType SELECTION_TYPE = SelectionType::TOURNAMENT;
+
+	// TABU SEARCH
+	const int NEIGHBOURS = 20;
+	const int ITERATIONS = 5000;
+	const int TABU_SIZE = 200;
 };

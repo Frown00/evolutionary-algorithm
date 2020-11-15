@@ -7,6 +7,7 @@
 class Individual {
 	public:
 		Individual(int t_dimension);
+		Individual(Individual* other);
 		~Individual();
 		std::vector<int> getGenotype();
 		std::string getTextGenotype();
