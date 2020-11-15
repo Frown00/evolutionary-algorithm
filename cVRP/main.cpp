@@ -16,14 +16,19 @@ int main()
   loader->readFile();
   VehicleRoutingProblem* problem = loader->getProblem();
   Summary* greedy = problem->greedySolution();
-  Summary* random = problem->randomSolution(1);
-  Evolution* ea = new Evolution(problem);
+  Summary* random = problem->randomSolution(1000);
+ /* Evolution* ea = new Evolution(problem);
   std::vector<Summary*> evolution = ea->solve(1);
   writer->openEvolutionFile();
   writer->saveGreedy(greedy);
   writer->saveRandom(random);
   writer->saveEvolution(evolution);
+  writer->close();*/
+  TabuSearch* tabu = new TabuSearch(problem);
+  std::vector<Summary*> tabu_search = tabu->solve(10);
+  writer->openTabuFile();
+  writer->saveGreedy(greedy);
+  writer->saveRandom(random);
+  writer->saveTabu(tabu_search);
   writer->close();
-  //TabuSearch* tabu = new TabuSearch(problem);
-  //std::vector<Summary*> ts = tabu->solve(1);
 }
