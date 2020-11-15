@@ -49,14 +49,14 @@ double Summary::countStd() {
 void Summary::addResult(Individual* individual)
 {
 	double result = individual->getFitness();
-	if (result < m_best) {
+	if(result < m_best) {
 		m_best = result;
 		m_best_route = individual;
 	}
-	if (result > m_worst) {
+	if(result > m_worst) {
 		m_worst = result;
 	}
-	m_results.push_back(individual->getFitness());
+	m_results.push_back(result);
 }
 
 void Summary::addResult(double t_result) {
