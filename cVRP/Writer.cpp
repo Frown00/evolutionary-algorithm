@@ -45,6 +45,8 @@ void Writer::openEvolutionFile()
 		crossover_name + std::to_string((int)config::P_X) + "-" +
 		mutation_name + std::to_string((int)config::P_M) + "-" +
 		selection_name;
+	m_file.open("./results/" + filename + ".csv");
+
 	m_file << "Constrained vehicle routing problem\n";
 	m_file << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
 	m_file << "Evolution parameters\n";
@@ -59,13 +61,35 @@ void Writer::openEvolutionFile()
 	else {
 		m_file << "\n";
 	}
-	m_file.open("./results/" + filename + ".csv");
 }
 
 void Writer::openTabuFile()
 {
-	std::string filename = "abc";
+	std::string mutation_name = "";
+	std::string mutation_type = "";
+	switch (config::MUTATION_TYPE) {
+		case evolution::MutationType::SWAP:
+			mutation_name = "SWAP";
+			mutation_type = "SWAP";
+			break;
+		case evolution::MutationType::INVERSION:
+			mutation_name = "INVERSION";
+			mutation_type = "INVERSION";
+			break;
+		}
+	std::string filename = config::INSTANCE_PROBLEM + "-tabu_search-" +
+		"ITER" + std::to_string(config::ITERATIONS) + "-" +
+		"N" + std::to_string(config::NEIGHBOURS) + "-" +
+		"TS" + std::to_string(config::TABU_SIZE) + "-" +
+		mutation_name;
 	m_file.open("./results/" + filename + ".csv");
+	m_file << "Constrained vehicle routing problem\n";
+	m_file << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
+	m_file << "Tabu search parameters\n";
+	m_file << "Iterations:;" + std::to_string(config::ITERATIONS) + "\n";
+	m_file << "Neighbours:;" + std::to_string(config::NEIGHBOURS) + "\n";
+	m_file << "Tabu size:;" + std::to_string(config::TABU_SIZE) + "\n";
+	m_file << "Neighbour operation:;" + mutation_type + "\n";
 }
 
 void Writer::saveGreedy(Summary* t_greedy)
@@ -86,28 +110,41 @@ void Writer::saveRandom(Summary* t_random)
 		std::to_string(t_random->getWorst()) + ";" +
 		std::to_string(t_random->getAverage()) + ";" +
 		std::to_string(t_random->getStd()) + "\n";
-	m_file << "\nEvolution solution\n";
-	m_file << "Generation;Best;Worst;Average;Best Ever;Std\n";
+	
 }
 
 void Writer::saveEvolution(std::vector<Summary*> t_evolution)
 {
-	double bestEver = t_evolution[0]->getBest();
+	double best_ever = t_evolution[0]->getBest();
 	for(int g = 0; g < t_evolution.size(); g++) {
-		if(t_evolution[g]->getBest() < bestEver)
-			bestEver = t_evolution[g]->getBest();
+		if(t_evolution[g]->getBest() < best_ever)
+			best_ever = t_evolution[g]->getBest();
 		m_file <<
 			std::to_string(g) + ";" +
 			std::to_string(t_evolution[g]->getBest()) + ";" +
 			std::to_string(t_evolution[g]->getWorst()) + ";" +
 			std::to_string(t_evolution[g]->getAverage()) + ";" +
-			std::to_string(bestEver) + ";" +
+			std::to_string(best_ever) + ";" +
 			std::to_string(t_evolution[g]->getStd()) + "\n";
 	}
 }
 
 void Writer::saveTabu(std::vector<Summary*> t_tabu)
 {
+	m_file << "\nEvolution solution\n";
+	m_file << "Iteration;Best;Worst;Average;Best Ever;Std\n";
+	double best_ever = t_tabu[0]->getBest();
+	for (int i = 0; i < t_tabu.size(); i++) {
+		if (t_tabu[i]->getBest() < best_ever)
+			best_ever = t_tabu[i]->getBest();
+		m_file <<
+			std::to_string(i) + ";" +
+			std::to_string(t_tabu[i]->getBest()) + ";" +
+			std::to_string(t_tabu[i]->getWorst()) + ";" +
+			std::to_string(t_tabu[i]->getAverage()) + ";" +
+			std::to_string(best_ever) + ";" +
+			std::to_string(t_tabu[i]->getStd()) + "\n";
+	}
 }
 
 void Writer::close()
