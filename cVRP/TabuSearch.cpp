@@ -25,11 +25,9 @@ std::vector<Summary*> TabuSearch::solve(int t_test_num)
 				summary->addResult(neighbours[n]);
 			}
 			Individual* best_neighbour = getBestTabuNeighbour(neighbours);
-			if(best_neighbour == nullptr) { 
+			if(best_neighbour != nullptr) { 
 				// do nothing 
-			}
-			else if(best_neighbour->getFitness() < best_current->getFitness()) {
-				best_current = best_neighbour;
+				best_current = new Individual(best_neighbour);
 			}
 			updateTabu(neighbours);
 			summary->countAverage();
@@ -42,6 +40,18 @@ std::vector<Summary*> TabuSearch::solve(int t_test_num)
 	}
 	std::cout << "\nCOMPLETED\n";
 	return experiment->getOverallSummary();
+}
+
+Individual* TabuSearch::createInitialSolution()
+{
+	Individual* initial = new Individual(m_problem->getDimension());
+	initial->setRandomGenotype(
+		m_problem->getDepot(),
+		m_problem->getLocations(),
+		m_problem->getCapacity()
+	);
+	initial->countFitness(m_problem->getDepot(), m_problem->getLocations());
+	return initial;
 }
 
 std::vector<Individual*> TabuSearch::findNeighbours(Individual* t_best_current)
@@ -61,29 +71,17 @@ std::vector<Individual*> TabuSearch::findNeighbours(Individual* t_best_current)
 	return neigbourhood;
 }
 
-Individual* TabuSearch::createInitialSolution()
-{
-	Individual* initial = new Individual(m_problem->getDimension());
-	initial->setRandomGenotype(
-		m_problem->getDepot(),
-		m_problem->getLocations(),
-		m_problem->getCapacity()
-	);
-	initial->countFitness(m_problem->getDepot(), m_problem->getLocations());
-	return initial;
-}
-
 Individual* TabuSearch::getBestTabuNeighbour(std::vector<Individual*> t_neighbourhood)
 {
 	Individual* best = nullptr;
 	for(int i = 0; i < t_neighbourhood.size(); i++) {
 		if(best == nullptr) {
-			if(isTabu(t_neighbourhood[i])) {
+			if(!isTabu(t_neighbourhood[i])) {
 				best = t_neighbourhood[i];
 			}
 		}
 		else if(t_neighbourhood[i]->getFitness() < best->getFitness()) {
-			if(isTabu(t_neighbourhood[i])) {
+			if(!isTabu(t_neighbourhood[i])) {
 				best = t_neighbourhood[i];
 			}
 		}
@@ -108,7 +106,7 @@ void TabuSearch::updateTabu(std::vector<Individual*> t_neighbourhood)
 	}
 	int excess = std::max(int(m_tabu.size() - config::TABU_SIZE), 0);
 	for(int i = 0; i < excess; i++) {
-		m_tabu.erase(m_tabu.begin() + i);
+		m_tabu.erase(m_tabu.begin());
 	}
 }
 
