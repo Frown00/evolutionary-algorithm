@@ -92,6 +92,35 @@ void Writer::openTabuFile()
 	m_file << "Neighbour operation:;" + mutation_type + "\n";
 }
 
+void Writer::openAnealingFile()
+{
+	std::string mutation_name = "";
+	std::string mutation_type = "";
+	switch (config::MUTATION_TYPE) {
+	case evolution::MutationType::SWAP:
+		mutation_name = "SWAP";
+		mutation_type = "SWAP";
+		break;
+	case evolution::MutationType::INVERSION:
+		mutation_name = "INVERSION";
+		mutation_type = "INVERSION";
+		break;
+	}
+	std::string filename = config::INSTANCE_PROBLEM + "-annealing-" +
+		"ITER" + std::to_string(config::ITERATIONS) + "-" +
+		"N" + std::to_string(config::NEIGHBOURS) + "-" +
+		"TS" + std::to_string(config::TABU_SIZE) + "-" +
+		mutation_name;
+	m_file.open("./results/" + filename + ".csv");
+	m_file << "Constrained vehicle routing problem\n";
+	m_file << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
+	m_file << "Tabu search parameters\n";
+	m_file << "Iterations:;" + std::to_string(config::ITERATIONS) + "\n";
+	m_file << "Neighbours:;" + std::to_string(config::NEIGHBOURS) + "\n";
+	m_file << "Tabu size:;" + std::to_string(config::TABU_SIZE) + "\n";
+	m_file << "Neighbour operation:;" + mutation_type + "\n";
+}
+
 void Writer::saveGreedy(Summary* t_greedy)
 {
 	m_file << "\nGreedy solution\n";
@@ -131,7 +160,7 @@ void Writer::saveEvolution(std::vector<Summary*> t_evolution)
 
 void Writer::saveTabu(std::vector<Summary*> t_tabu)
 {
-	m_file << "\nEvolution solution\n";
+	m_file << "\nTabu search solution\n";
 	m_file << "Iteration;Best;Worst;Average;Best Ever;Std\n";
 	double best_ever = t_tabu[0]->getBest();
 	for (int i = 0; i < t_tabu.size(); i++) {
@@ -144,6 +173,24 @@ void Writer::saveTabu(std::vector<Summary*> t_tabu)
 			std::to_string(t_tabu[i]->getAverage()) + ";" +
 			std::to_string(best_ever) + ";" +
 			std::to_string(t_tabu[i]->getStd()) + "\n";
+	}
+}
+
+void Writer::saveAnealing(std::vector<Summary*> t_anealing)
+{
+	m_file << "\nSimulated annealing solution\n";
+	m_file << "Iteration;Best;Worst;Average;Best Ever;Std\n";
+	double best_ever = t_anealing[0]->getBest();
+	for (int i = 0; i < t_anealing.size(); i++) {
+		if (t_anealing[i]->getBest() < best_ever)
+			best_ever = t_anealing[i]->getBest();
+		m_file <<
+			std::to_string(i) + ";" +
+			std::to_string(t_anealing[i]->getBest()) + ";" +
+			/*std::to_string(t_anealing[i]->getWorst()) + ";" +
+			std::to_string(t_anealing[i]->getAverage()) + ";" +*/
+			std::to_string(best_ever) + "\n";
+			//std::to_string(t_anealing[i]->getStd()) + "\n";
 	}
 }
 

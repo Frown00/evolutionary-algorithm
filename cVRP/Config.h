@@ -5,7 +5,7 @@
 namespace config {
 	using namespace evolution;
 	// path to file with vehicle routing problem
-	const std::string INSTANCE_PROBLEM = PROBLEM_A_N45_K6;
+	const std::string INSTANCE_PROBLEM = PROBLEM_A_N37_K6;
 	const std::string FILENAME = "./problems/" + INSTANCE_PROBLEM + ".vrp";
 
 	// population size
@@ -29,7 +29,7 @@ namespace config {
 	const SelectionType SELECTION_TYPE = SelectionType::TOURNAMENT;
 
 	// TABU SEARCH
-	const int NEIGHBOURS = 20;
-	const int ITERATIONS = 5000;
+	const int NEIGHBOURS = 1;
+	const int ITERATIONS = 1000;
 	const int TABU_SIZE = 200;
 };

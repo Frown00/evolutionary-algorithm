@@ -146,6 +146,7 @@
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="NodeCoord.cpp" />
+    <ClCompile Include="SimulatedAnnealing.cpp" />
     <ClCompile Include="Summary.cpp" />
     <ClCompile Include="TabuSearch.cpp" />
     <ClCompile Include="Test.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Location.h" />
     <ClInclude Include="NodeCoord.h" />
     <ClInclude Include="ProblemNames.h" />
+    <ClInclude Include="SimulatedAnnealing.h" />
     <ClInclude Include="Summary.h" />
     <ClInclude Include="TabuSearch.h" />
     <ClInclude Include="Test.h" />
