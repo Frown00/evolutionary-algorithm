@@ -3,7 +3,6 @@
 TabuSearch::TabuSearch(VehicleRoutingProblem* t_problem)
 {
 	m_problem = t_problem;
-	m_best_ever = new Individual(t_problem->getDimension());
 	m_tabu = std::vector<Individual*>();
 }
 
