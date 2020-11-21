@@ -25,18 +25,18 @@ namespace evolution {
 	
 		public:
 			Evolution(VehicleRoutingProblem* t_problem);
-			std::vector<Summary*> solve(int t_test_num);
+			Summary* test(int t_test_num);
+			Test* solve();
 	
 		private:
-			void createPopulation();
-			void mutation();
-			void crossover();
-			void tournamentSelection();
-			void rouletteSelection();
-			void selection();
-			void refreshFitness();
+			std::vector<Individual*> createPopulation();
+			void mutation(std::vector<Individual*> t_population);
+			void crossover(std::vector<Individual*> t_population, std::vector<Individual*> &t_new_population);
+			std::vector<Individual*> tournamentSelection(std::vector<Individual*> t_population);
+			std::vector<Individual*> rouletteSelection(std::vector<Individual*> t_population);
+			std::vector<Individual*> selection(std::vector<Individual*> t_population);
+			void refreshFitness(std::vector<Individual*> t_population);
 			VehicleRoutingProblem* m_problem;
-			std::vector<Individual*> m_population;
 
 	};
 }
