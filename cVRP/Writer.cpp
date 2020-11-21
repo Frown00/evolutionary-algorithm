@@ -142,19 +142,22 @@ void Writer::saveRandom(Summary* t_random)
 	
 }
 
-void Writer::saveEvolution(std::vector<Summary*> t_evolution)
+void Writer::saveEvolution(Test* t_evolution)
 {
-	double best_ever = t_evolution[0]->getBest();
-	for(int g = 0; g < t_evolution.size(); g++) {
-		if(t_evolution[g]->getBest() < best_ever)
-			best_ever = t_evolution[g]->getBest();
+	m_file << "\nEvolution solution\n";
+	m_file << "Generation;Best;Worst;Average;Best Ever;Std\n";
+	std::vector<Summary*> generations = t_evolution->getSummaries();
+	double best_ever = generations[0]->getBest();
+	for(int g = 0; g < generations.size(); g++) {
+		if(generations[g]->getBest() < best_ever)
+			best_ever = generations[g]->getBest();
 		m_file <<
 			std::to_string(g) + ";" +
-			std::to_string(t_evolution[g]->getBest()) + ";" +
-			std::to_string(t_evolution[g]->getWorst()) + ";" +
-			std::to_string(t_evolution[g]->getAverage()) + ";" +
+			std::to_string(generations[g]->getBest()) + ";" +
+			std::to_string(generations[g]->getWorst()) + ";" +
+			std::to_string(generations[g]->getAverage()) + ";" +
 			std::to_string(best_ever) + ";" +
-			std::to_string(t_evolution[g]->getStd()) + "\n";
+			std::to_string(generations[g]->getStd()) + "\n";
 	}
 }
 

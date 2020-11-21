@@ -6,7 +6,7 @@ TabuSearch::TabuSearch(VehicleRoutingProblem* t_problem)
 	m_tabu = std::vector<Individual*>();
 }
 
-std::vector<Summary*> TabuSearch::solve(int t_test_num)
+Summary* TabuSearch::solve(int t_test_num)
 {
 	Experiment* experiment = new Experiment();
 	for(int t = 1; t <= t_test_num; t++) {
@@ -20,7 +20,8 @@ std::vector<Summary*> TabuSearch::solve(int t_test_num)
 			Summary* summary = new Summary(i);
 			std::cout << "\r" << "PROGRESS: " << i << " / " << config::ITERATIONS;
 			std::vector<Individual*> neighbours = findNeighbours(best_current);
-			for(int n = 0; n < neighbours.size(); n++) {
+			int k = neighbours.size();
+			for(int n = 0; n < k; n++) {
 				summary->addResult(neighbours[n]);
 			}
 			Individual* best_neighbour = getBestTabuNeighbour(neighbours);
