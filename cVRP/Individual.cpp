@@ -49,11 +49,10 @@ std::vector<int> Individual::getIds(int t_dimension, int t_depot_id) {
 }
 
 void Individual::setRandomGenotype(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
-  int dimension = t_locations.size();
   int depotId = t_depot->getId();
-  std::vector<int> left_location_ids = getIds(dimension, depotId);
+  std::vector<int> left_location_ids = getIds(m_dimension, depotId);
   m_genotype.push_back(t_depot->getId());
-  for(int i = 0; i < dimension - 1; i++) {
+  for(int i = 0; i < m_dimension - 1; i++) {
     int idx = rand() % left_location_ids.size();
     m_genotype.push_back(left_location_ids[idx]);
     left_location_ids.erase(left_location_ids.begin() + idx);

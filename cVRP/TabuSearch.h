@@ -11,7 +11,7 @@ class TabuSearch
 {
 	public:
 		TabuSearch(VehicleRoutingProblem* t_problem);
-		std::vector<Summary*> solve(int t_test_num);
+		Summary* solve(int t_test_num);
 	private:
 		VehicleRoutingProblem* m_problem;
 		std::vector<Individual*> m_tabu;
