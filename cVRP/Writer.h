@@ -13,7 +13,7 @@ class Writer
 		void saveRandom(Summary* t_random);
 		void saveEvolution(Test* t_evolution);
 		void saveTabu(std::vector<Summary*> t_tabu);
-		void saveAnealing(std::vector<Summary*> t_anealing);
+		void saveAnealing(Test* t_anealing);
 		void close();
 	
 	private:
