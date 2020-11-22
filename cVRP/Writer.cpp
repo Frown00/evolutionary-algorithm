@@ -107,17 +107,21 @@ void Writer::openAnealingFile()
 		break;
 	}
 	std::string filename = config::INSTANCE_PROBLEM + "-annealing-" +
-		"ITER" + std::to_string(config::ITERATIONS) + "-" +
-		"N" + std::to_string(config::NEIGHBOURS) + "-" +
-		"TS" + std::to_string(config::TABU_SIZE) + "-" +
+		"ITER" + std::to_string(config::ITERATIONS_SA) + "-" +
+		"N" + std::to_string(config::NEIGHBOURS_SA) + "-" +
+		"T_START" + std::to_string(config::TEMP_START) + "-" +
+		"T_STOP" + std::to_string(config::TEMP_STOP) + "-" +
+		"C_R" + std::to_string(config::COOLING_RATE) + "-" +
 		mutation_name;
 	m_file.open("./results/" + filename + ".csv");
 	m_file << "Constrained vehicle routing problem\n";
 	m_file << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
-	m_file << "Tabu search parameters\n";
+	m_file << "Simulated annealing parameters\n";
 	m_file << "Iterations:;" + std::to_string(config::ITERATIONS) + "\n";
-	m_file << "Neighbours:;" + std::to_string(config::NEIGHBOURS) + "\n";
-	m_file << "Tabu size:;" + std::to_string(config::TABU_SIZE) + "\n";
+	m_file << "Neighbours:;" + std::to_string(config::NEIGHBOURS_SA) + "\n";
+	m_file << "Temperature start:;" + std::to_string(config::TEMP_START) + "\n";
+	m_file << "Temperature stop:;" + std::to_string(config::TEMP_STOP) + "\n";
+	m_file << "Cooling rate:;" + std::to_string(config::COOLING_RATE) + "\n";
 	m_file << "Neighbour operation:;" + mutation_type + "\n";
 }
 
@@ -179,17 +183,18 @@ void Writer::saveTabu(std::vector<Summary*> t_tabu)
 	}
 }
 
-void Writer::saveAnealing(std::vector<Summary*> t_anealing)
+void Writer::saveAnealing(Test* t_anealing)
 {
+	std::vector<Summary*> iterations = t_anealing->getSummaries();
 	m_file << "\nSimulated annealing solution\n";
-	m_file << "Iteration;Best;Worst;Average;Best Ever;Std\n";
-	double best_ever = t_anealing[0]->getBest();
-	for (int i = 0; i < t_anealing.size(); i++) {
-		if (t_anealing[i]->getBest() < best_ever)
-			best_ever = t_anealing[i]->getBest();
+	m_file << "Iteration;Best;Best Ever;Std\n";
+	double best_ever = iterations[0]->getBest();
+	for (int i = 0; i < iterations.size(); i++) {
+		if(iterations[i]->getBest() < best_ever)
+			best_ever = iterations[i]->getBest();
 		m_file <<
 			std::to_string(i) + ";" +
-			std::to_string(t_anealing[i]->getBest()) + ";" +
+			std::to_string(iterations[i]->getBest()) + ";" +
 			/*std::to_string(t_anealing[i]->getWorst()) + ";" +
 			std::to_string(t_anealing[i]->getAverage()) + ";" +*/
 			std::to_string(best_ever) + "\n";

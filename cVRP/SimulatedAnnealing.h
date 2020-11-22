@@ -12,7 +12,9 @@ class SimulatedAnnealing
 {
 	public:
 		SimulatedAnnealing(VehicleRoutingProblem* t_problem);
-		std::vector<Summary*> solve(int t_test_num);
+		Summary* test(int t_test_num);
+		Test* solve();
+
 	private:
 		VehicleRoutingProblem* m_problem;
 		std::vector<Individual*> findNeighbours(Individual* t_best_current);
@@ -23,8 +25,11 @@ class SimulatedAnnealing
 				return 1;
 			}
 			else {
-				return std::exp(-dE / T);
+				return std::exp((-dE) / T);
 			}
+		}
+		double temperature(double T) {
+			return T - 1;
 		}
 		
 };
