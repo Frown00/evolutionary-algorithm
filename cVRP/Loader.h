@@ -3,13 +3,14 @@
 #include <fstream>
 #include "VehicleRoutingProblem.h"
 #include "ErrorMessages.h"
-#include "Config.h"
+#include "DefaultConfig.h"
+#include "Configuration.h"
 
 class Loader
 {
 	public:
 		Loader();
-		void readFile();
+		void readFile(Configuration* config);
 		VehicleRoutingProblem* getProblem();
 
 	private:

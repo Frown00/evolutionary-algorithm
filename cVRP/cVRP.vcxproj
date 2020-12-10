@@ -139,15 +139,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Evolution.cpp" />
+    <ClCompile Include="EvolutionConfig.cpp" />
     <ClCompile Include="Experiment.cpp" />
     <ClCompile Include="Individual.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="NodeCoord.cpp" />
+    <ClCompile Include="SAConfig.cpp" />
     <ClCompile Include="SimulatedAnnealing.cpp" />
     <ClCompile Include="Summary.cpp" />
+    <ClCompile Include="TabuConfig.cpp" />
     <ClCompile Include="TabuSearch.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="utils.cpp" />
@@ -155,17 +159,22 @@
     <ClCompile Include="Writer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Config.h" />
+    <ClInclude Include="DefaultConfig.h" />
+    <ClInclude Include="Configuration.h" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="ErrorMessages.h" />
     <ClInclude Include="Evolution.h" />
+    <ClInclude Include="EvolutionConfig.h" />
     <ClInclude Include="Experiment.h" />
     <ClInclude Include="Individual.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Location.h" />
     <ClInclude Include="NodeCoord.h" />
     <ClInclude Include="ProblemNames.h" />
+    <ClInclude Include="SAConfig.h" />
     <ClInclude Include="SimulatedAnnealing.h" />
     <ClInclude Include="Summary.h" />
+    <ClInclude Include="TabuConfig.h" />
     <ClInclude Include="TabuSearch.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="VehicleRoutingProblem.h" />

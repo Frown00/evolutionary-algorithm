@@ -1,9 +1,10 @@
 #include "TabuSearch.h"
 
-TabuSearch::TabuSearch(VehicleRoutingProblem* t_problem)
+TabuSearch::TabuSearch(VehicleRoutingProblem* t_problem, TabuConfig* t_config)
 {
 	m_problem = t_problem;
 	m_tabu = std::vector<Individual*>();
+	m_config = t_config;
 }
 
 Test* TabuSearch::solve()
@@ -14,16 +15,16 @@ Test* TabuSearch::solve()
 	Individual* best_current = createInitialSolution();
 	m_tabu.push_back(best_current);
 	int i = 1;
-	while (i <= config::ITERATIONS) {
+	while(i <= m_config->getIterations()) {
 		Summary* summary = new Summary(i);
-		std::cout << "\r" << "PROGRESS: " << i << " / " << config::ITERATIONS;
+		std::cout << "\r" << "PROGRESS: " << i << " / " << m_config->getIterations();
 		std::vector<Individual*> neighbours = findNeighbours(best_current);
 		int k = neighbours.size();
-		for (int n = 0; n < k; n++) {
+		for(int n = 0; n < k; n++) {
 			summary->addResult(neighbours[n]);
 		}
 		Individual* best_neighbour = getBestTabuNeighbour(neighbours);
-		if (best_neighbour != nullptr) {
+		if(best_neighbour != nullptr) {
 			// do nothing 
 			best_current = new Individual(best_neighbour);
 		}
@@ -47,9 +48,9 @@ Summary* TabuSearch::test(int t_test_num)
 		Individual* best_current = createInitialSolution();
 		m_tabu.push_back(best_current);
 		int i = 1;
-		while(i <= config::ITERATIONS) {
+		while(i <= m_config->getIterations()) {
 			Summary* summary = new Summary(i);
-			std::cout << "\r" << "PROGRESS: " << i << " / " << config::ITERATIONS;
+			std::cout << "\r" << "PROGRESS: " << i << " / " << m_config->getIterations();
 			std::vector<Individual*> neighbours = findNeighbours(best_current);
 			int k = neighbours.size();
 			for(int n = 0; n < k; n++) {
@@ -88,10 +89,11 @@ Individual* TabuSearch::createInitialSolution()
 std::vector<Individual*> TabuSearch::findNeighbours(Individual* t_best_current)
 {
 	std::vector<Individual*> neigbourhood;
-	for(int i = 0; i < config::NEIGHBOURS; i++) {
+	for(int i = 0; i < m_config->getNeighbours(); i++) {
 		Individual* neighbour = new Individual(m_problem->getDimension());
 		neighbour->setGenotype(t_best_current->getGenotype());
 		neighbour->mutate(
+			m_config->getNeighbourhoodType(),
 			m_problem->getDepot(),
 			m_problem->getLocations(),
 			m_problem->getCapacity()
@@ -106,14 +108,15 @@ Individual* TabuSearch::getBestTabuNeighbour(std::vector<Individual*> t_neighbou
 {
 	Individual* best = nullptr;
 	for(int i = 0; i < t_neighbourhood.size(); i++) {
+		Individual* neighbour = t_neighbourhood[i];
 		if(best == nullptr) {
-			if(!isTabu(t_neighbourhood[i])) {
-				best = t_neighbourhood[i];
+			if(!isTabu(neighbour)) {
+				best = neighbour;
 			}
 		}
-		else if(t_neighbourhood[i]->getFitness() < best->getFitness()) {
-			if(!isTabu(t_neighbourhood[i])) {
-				best = t_neighbourhood[i];
+		else if(neighbour->getFitness() < best->getFitness()) {
+			if(!isTabu(neighbour)) {
+				best = neighbour;
 			}
 		}
 	}
@@ -122,8 +125,11 @@ Individual* TabuSearch::getBestTabuNeighbour(std::vector<Individual*> t_neighbou
 
 bool TabuSearch::isTabu(Individual* t_individual)
 {
-	for(int i = 0; i < m_tabu.size(); i++) {
-		if(m_tabu[i]->getTextGenotype() == t_individual->getTextGenotype()) {
+	std::string genotype = t_individual->getTextGenotype();
+	int tabu_size = m_tabu.size();
+	for(int i = 0; i < tabu_size; i++) {
+		std::string other_genotype = m_tabu[i]->getTextGenotype();
+		if(other_genotype == genotype) {
 			return true;
 		}
 	}
@@ -135,7 +141,8 @@ void TabuSearch::updateTabu(std::vector<Individual*> t_neighbourhood)
 	for(int i = 0; i < t_neighbourhood.size(); i++) {
 		m_tabu.push_back(t_neighbourhood[i]);
 	}
-	int excess = std::max(int(m_tabu.size() - config::TABU_SIZE), 0);
+	int tabu_excess = int(m_tabu.size() - m_config->getTabuSize());
+	int excess = std::max(tabu_excess, 0);
 	for(int i = 0; i < excess; i++) {
 		m_tabu.erase(m_tabu.begin());
 	}

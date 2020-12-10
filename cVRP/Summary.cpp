@@ -41,7 +41,7 @@ double Summary::countStd() {
 	for(int i = 0; i < m_results.size(); i++) {
 		sum += pow((m_results[i] - avg), 2);
 	}
-	m_std = sqrt(sum / avg);
+	m_std = sqrt(sum / m_results.size());
 	return m_std;
 }
 

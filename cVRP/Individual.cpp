@@ -1,5 +1,5 @@
 #include "Individual.h"
-#include "Config.h"
+#include "utils.cpp"
 
 Individual::Individual(int t_dimension) {
   m_dimension = t_dimension;
@@ -11,7 +11,7 @@ Individual::Individual(Individual* other)
   m_genotype = other->m_genotype;
   m_fitness = other->m_fitness;
   m_dimension = other->m_dimension;
-
+  m_genotype_text = other->m_genotype_text;
 }
 
 Individual::~Individual()
@@ -25,17 +25,19 @@ std::vector<int> Individual::getGenotype() {
 
 std::string Individual::getTextGenotype()
 {
-  std::string genotype = "";
-  for(int i = 0; i < m_genotype.size(); i++) {
+  //std::string genotype = "";
+  /*for(int i = 0; i < m_genotype.size(); i++) {
     genotype += std::to_string(m_genotype[i]);
     genotype += " ";
-  }
-  return genotype;
+  }*/
+  return m_genotype_text;
 }
 
 void Individual::setGenotype(std::vector<int> t_genotype) {
+  m_genotype_text = "";
   for(int i = 0; i < t_genotype.size(); i++) {
     m_genotype.push_back(t_genotype[i]);
+    m_genotype_text += std::to_string(t_genotype[i]);
   }
 }
 
@@ -49,8 +51,8 @@ std::vector<int> Individual::getIds(int t_dimension, int t_depot_id) {
 }
 
 void Individual::setRandomGenotype(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
-  int depotId = t_depot->getId();
-  std::vector<int> left_location_ids = getIds(m_dimension, depotId);
+  int depot_id = t_depot->getId();
+  std::vector<int> left_location_ids = getIds(m_dimension, depot_id);
   m_genotype.push_back(t_depot->getId());
   for(int i = 0; i < m_dimension - 1; i++) {
     int idx = rand() % left_location_ids.size();
@@ -68,16 +70,18 @@ void Individual::setRandomGenotype(Location* t_depot, std::vector<Location*> t_l
 
 double Individual::countFitness(Location* t_depot, std::vector<Location*> t_locations) {
   m_fitness = 0;
-  Location* depot = getLocationById(t_locations, t_depot->getId());
+  const int genotype_size = m_genotype.size();
   Location* first = getLocationById(t_locations, m_genotype[0]);
-  Location* last = getLocationById(t_locations, m_genotype[m_genotype.size() - 1]);
-  m_fitness += depot->countDistance(first->getCoords());
-  for(int i = 0; i < m_genotype.size() - 1; i++) {
+  int prev_last = genotype_size - 1;
+  Location* last = getLocationById(t_locations, m_genotype[prev_last]);
+  m_fitness += t_depot->countDistance(first->getCoords());
+  for(int i = 0; i < prev_last; i++) {
     Location* start_route = getLocationById(t_locations, m_genotype[i]);
-    Location* end_route = getLocationById(t_locations, m_genotype[i + 1]);
+    int next = i + 1;
+    Location* end_route = getLocationById(t_locations, m_genotype[next]);
     m_fitness += start_route->countDistance(end_route->getCoords());
   }
-  m_fitness += depot->countDistance(last->getCoords());
+  m_fitness += t_depot->countDistance(last->getCoords());
   return m_fitness;
 }
 
@@ -92,11 +96,35 @@ Location* Individual::getLocationById(std::vector<Location*> t_locations, int t_
   }
 }
 
+void Individual::mutate(
+  MutationType t_type, 
+  Location* t_depot, 
+  std::vector<Location*> t_locations, 
+  int t_capacity
+) {
+  int gen1_pos = (rand() % (m_genotype.size() - 1)) + 1;
+  int gen2_pos = (rand() % (m_genotype.size() - 1)) + 1;
+  switch (t_type) {
+  case MutationType::SWAP: {
+    swapMutation(gen1_pos, gen2_pos);
+    break;
+  }
+  case MutationType::INVERSION: {
+    inversionMutation(gen1_pos, gen2_pos);
+    break;
+  }
+  default: throw "Wrong mutation type";
+  }
+  fixGenotype(t_depot, t_locations, t_capacity);
+}
+
+
 void Individual::fixGenotype(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
-  if(m_genotype[0] != t_depot->getId())
-    m_genotype.insert(m_genotype.begin() + 0, t_depot->getId());
-  if(m_genotype[m_genotype.size() - 1] != t_depot->getId())
-    m_genotype.insert(m_genotype.begin() + m_genotype.size(), t_depot->getId());
+  int depot_id = t_depot->getId();
+  if(m_genotype[0] != depot_id)
+    m_genotype.insert(m_genotype.begin() + 0, depot_id);
+  if(m_genotype[m_genotype.size() - 1] != depot_id)
+    m_genotype.insert(m_genotype.begin() + m_genotype.size(), depot_id);
   // clear depot after depot
   for(int i = 0; i < m_genotype.size() - 1; i++) {
     if(m_genotype[i] == m_genotype[i + 1]) {
@@ -113,10 +141,14 @@ void Individual::fixGenotype(Location* t_depot, std::vector<Location*> t_locatio
       Location* loc = getLocationById(t_locations, m_genotype[i]);
       current_weight += loc->getDemands();
       if(current_weight > t_capacity) {
-        m_genotype.insert(m_genotype.begin() + i, t_depot->getId());
+        m_genotype.insert(m_genotype.begin() + i, depot_id);
         current_weight = 0;
       }
     }
+  }
+  m_genotype_text = "";
+  for(int i = 0; i < m_genotype.size(); i++) {
+    m_genotype_text += std::to_string(m_genotype[i]);
   }
 }
 
@@ -149,22 +181,7 @@ void Individual::inversionMutation(int t_gen1_pos, int t_gen2_pos) {
   }
 }
 
-void Individual::mutate(Location* t_depot, std::vector<Location*> t_locations, int t_capacity) {
-  int gen1_pos = (rand() % (m_genotype.size() - 1)) + 1;
-  int gen2_pos = (rand() % (m_genotype.size() - 1)) + 1;
-  switch(config::MUTATION_TYPE) {
-    case evolution::MutationType::SWAP: {
-      swapMutation(gen1_pos, gen2_pos);
-      break;
-    }
-    case evolution::MutationType::INVERSION: {
-      inversionMutation(gen1_pos, gen2_pos);
-      break;
-    }
-    default: break;
-  }
-  fixGenotype(t_depot, t_locations, t_capacity);
-}
+
 
 std::vector<std::vector<int>> Individual::cycleCrossover(Individual* t_other_individual, Location* t_depot) {
   std::vector<int> cycle;
@@ -268,16 +285,17 @@ std::vector<std::vector<int>> Individual::orderedCrossover(Individual* t_other_i
 }
 
 std::vector<Individual*> Individual::crossover(
+  CrossoverType t_type,
   Location* t_depot,
   std::vector<Location*> t_locations,
   int t_capacity,
   Individual* t_other_individual
 ) {
   std::vector<std::vector<int>> child_genotypes;
-  switch(config::CROSSOVER_TYPE) {
-    case evolution::CrossoverType::ORDERED:
+  switch(t_type) {
+    case CrossoverType::ORDERED:
       child_genotypes = orderedCrossover(t_other_individual, t_depot);
-    case evolution::CrossoverType::CYCLE:
+    case CrossoverType::CYCLE:
       child_genotypes = cycleCrossover(t_other_individual, t_depot);
       break;
     default:

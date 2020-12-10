@@ -1,8 +1,9 @@
 #include "SimulatedAnnealing.h"
 
-SimulatedAnnealing::SimulatedAnnealing(VehicleRoutingProblem* t_problem)
+SimulatedAnnealing::SimulatedAnnealing(VehicleRoutingProblem* t_problem, SAConfig* t_config)
 {
 	m_problem = t_problem;
+	m_config = t_config;
 }
 
 Test* SimulatedAnnealing::solve()
@@ -10,18 +11,34 @@ Test* SimulatedAnnealing::solve()
 	Test* test = new Test(0);
 	std::cout << "\n\nSIMULATED ANNEALING TEST: " << "\n";
 	Individual* best_current = createInitialSolution();
-	double temp_start = config::TEMP_START;
-	double temp_end = config::TEMP_STOP;
-	double cooling_rate = config::COOLING_RATE;
+	double temp_start = m_config->getTempStart();
+	double temp_end = m_config->getTempStop();
+	double cooling_rate = m_config->getCoolingRate();
+	int iterations = m_config->getIterations();
 	double T = temp_start;
 	int i = 1;
+	int neighbours_number = m_config->getNeighbours();
+	MutationType neighbourhood_type = m_config->getNeighbourhoodType();
+	Location* depot = m_problem->getDepot();
+	std::vector<Location*> locations = m_problem->getLocations();
+	int max_capacity = m_problem->getCapacity();
+	int dimension = m_problem->getDimension();
+
 	while(T > temp_end) {
-		if (i == config::ITERATIONS_SA) {
+		if (i == iterations) {
 			break;
 		}
 		Summary* summary = new Summary();
 		std::cout << "\r" << "PROGRESS: " << T << " / " << temp_end;
-		std::vector<Individual*> neighbours = findNeighbours(best_current);
+		std::vector<Individual*> neighbours = findNeighbours(
+			best_current,
+			neighbours_number,
+			neighbourhood_type,
+			depot,
+			locations,
+			max_capacity,
+			dimension
+		);
 		Individual* best_neighbour = getBestNeighbour(neighbours);
 		double dE = best_neighbour->getFitness() - best_current->getFitness();
 		double r = (double)rand() / RAND_MAX;
@@ -31,9 +48,6 @@ Test* SimulatedAnnealing::solve()
 		}
 		T *= cooling_rate;
 		summary->addResult(best_current);
-		/*for (int n = 0; n < neighbours.size(); n++) {
-			summary->addResult(neighbours[n]);
-		}*/
 		test->addSummary(summary);
 		summary->countAverage();
 		i++;
@@ -51,18 +65,34 @@ Summary* SimulatedAnnealing::test(int t_test_num)
 		Test* test = new Test(t);
 		std::cout << "\n\nSIMULATED ANNEALING TEST: " << t << "\n";
 		Individual* best_current = createInitialSolution();
-		double temp_start = config::TEMP_START;
-		double temp_end = config::TEMP_STOP;
-		double cooling_rate = config::COOLING_RATE;
+		double temp_start = m_config->getTempStart();
+		double temp_end = m_config->getTempStop();
+		double cooling_rate = m_config->getCoolingRate();
+		int iterations = m_config->getIterations();
 		double T = temp_start;
 		int i = 1;
+		int neighbours_number = m_config->getNeighbours();
+		MutationType neighbourhood_type = m_config->getNeighbourhoodType();
+		Location* depot = m_problem->getDepot();
+		std::vector<Location*> locations = m_problem->getLocations();
+		int max_capacity = m_problem->getCapacity();
+		int dimension = m_problem->getDimension();
+
 		while(T > temp_end) {
-			if(i == config::ITERATIONS_SA) {
+			if(i == iterations) {
 				break;
 			}
 			Summary* summary = new Summary(i);
 			std::cout << "\r" << "PROGRESS: " << T << " / " << temp_end;
-			std::vector<Individual*> neighbours = findNeighbours(best_current);
+			std::vector<Individual*> neighbours = findNeighbours(
+				best_current,
+				neighbours_number,
+				neighbourhood_type,
+				depot,
+				locations,
+				max_capacity,
+				dimension
+			);
 			Individual* best_neighbour = getBestNeighbour(neighbours);
 			double dE = best_neighbour->getFitness() - best_current->getFitness();
 			double r = (double)rand() / RAND_MAX;
@@ -87,18 +117,27 @@ Summary* SimulatedAnnealing::test(int t_test_num)
 	return experiment->getOverallSummary();
 }
 
-std::vector<Individual*> SimulatedAnnealing::findNeighbours(Individual* t_best_current)
+std::vector<Individual*> SimulatedAnnealing::findNeighbours(
+	Individual* t_best_current,
+	int t_neighbours,
+	MutationType t_neighbourhood_type,
+	Location* t_depot,
+	std::vector<Location*> t_locations,
+	int t_max_capacity,
+	int t_dimension
+)
 {
 	std::vector<Individual*> neigbourhood;
-	for (int i = 0; i < config::NEIGHBOURS_SA; i++) {
-		Individual* neighbour = new Individual(m_problem->getDimension());
+	for(int i = 0; i < t_neighbours; i++) {
+		Individual* neighbour = new Individual(t_dimension);
 		neighbour->setGenotype(t_best_current->getGenotype());
 		neighbour->mutate(
-			m_problem->getDepot(),
-			m_problem->getLocations(),
-			m_problem->getCapacity()
+			t_neighbourhood_type,
+			t_depot,
+			t_locations,
+			t_max_capacity
 		);
-		neighbour->countFitness(m_problem->getDepot(), m_problem->getLocations());
+		neighbour->countFitness(t_depot, t_locations);
 		neigbourhood.push_back(neighbour);
 	}
 	return neigbourhood;
