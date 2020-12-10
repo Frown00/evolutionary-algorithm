@@ -13,18 +13,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\evolution">
+      <UniqueIdentifier>{4458285f-0c20-4a53-a704-4489ee79c184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tabu-search">
+      <UniqueIdentifier>{41ecd15a-0f71-40b4-af86-ca496f36a947}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\simulated-annealing">
+      <UniqueIdentifier>{61de3e43-516b-48ad-a219-99fe8485331b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\analytics">
+      <UniqueIdentifier>{1a127d8c-38a0-4981-a421-186aca73e729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cVRP">
+      <UniqueIdentifier>{7993df05-0470-4996-bc59-c51cb4637b75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\evolution">
+      <UniqueIdentifier>{00dd2d37-f913-421c-9b81-884eaadc2a19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\analytics">
+      <UniqueIdentifier>{0da60d9d-258a-4d61-8608-dd4b6c8c5b29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cVRP">
+      <UniqueIdentifier>{6f51b77e-ee92-472a-807b-5562c164881d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\simulated-annealing">
+      <UniqueIdentifier>{ae1bddf2-b271-46e9-af6b-d11d371f8fd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\tabu-search">
+      <UniqueIdentifier>{bce56a8b-c017-4c3e-91ad-8685c1362010}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VehicleRoutingProblem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeCoord.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Location.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
@@ -33,29 +54,50 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Individual.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Evolution.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Summary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Writer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Test.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Evolution.cpp">
+      <Filter>Source Files\evolution</Filter>
     </ClCompile>
-    <ClCompile Include="Experiment.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="EvolutionConfig.cpp">
+      <Filter>Source Files\evolution</Filter>
     </ClCompile>
-    <ClCompile Include="TabuSearch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Configuration.cpp">
+      <Filter>Source Files\cVRP</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeCoord.cpp">
+      <Filter>Source Files\cVRP</Filter>
+    </ClCompile>
+    <ClCompile Include="Location.cpp">
+      <Filter>Source Files\cVRP</Filter>
+    </ClCompile>
+    <ClCompile Include="Individual.cpp">
+      <Filter>Source Files\cVRP</Filter>
     </ClCompile>
     <ClCompile Include="SimulatedAnnealing.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\simulated-annealing</Filter>
+    </ClCompile>
+    <ClCompile Include="SAConfig.cpp">
+      <Filter>Source Files\simulated-annealing</Filter>
+    </ClCompile>
+    <ClCompile Include="TabuConfig.cpp">
+      <Filter>Source Files\tabu-search</Filter>
+    </ClCompile>
+    <ClCompile Include="TabuSearch.cpp">
+      <Filter>Source Files\tabu-search</Filter>
+    </ClCompile>
+    <ClCompile Include="Summary.cpp">
+      <Filter>Source Files\analytics</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>Source Files\analytics</Filter>
+    </ClCompile>
+    <ClCompile Include="Experiment.cpp">
+      <Filter>Source Files\analytics</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicleRoutingProblem.cpp">
+      <Filter>Source Files\cVRP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,44 +107,59 @@
     <ClInclude Include="ErrorMessages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VehicleRoutingProblem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeCoord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Location.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Individual.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Evolution.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Summary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProblemNames.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Test.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Evolution.h">
+      <Filter>Header Files\evolution</Filter>
+    </ClInclude>
+    <ClInclude Include="EvolutionConfig.h">
+      <Filter>Header Files\evolution</Filter>
+    </ClInclude>
+    <ClInclude Include="Individual.h">
+      <Filter>Header Files\cVRP</Filter>
     </ClInclude>
     <ClInclude Include="Experiment.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\analytics</Filter>
+    </ClInclude>
+    <ClInclude Include="Location.h">
+      <Filter>Header Files\cVRP</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleRoutingProblem.h">
+      <Filter>Header Files\cVRP</Filter>
     </ClInclude>
     <ClInclude Include="TabuSearch.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\tabu-search</Filter>
+    </ClInclude>
+    <ClInclude Include="TabuConfig.h">
+      <Filter>Header Files\tabu-search</Filter>
     </ClInclude>
     <ClInclude Include="SimulatedAnnealing.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\simulated-annealing</Filter>
+    </ClInclude>
+    <ClInclude Include="SAConfig.h">
+      <Filter>Header Files\simulated-annealing</Filter>
+    </ClInclude>
+    <ClInclude Include="Summary.h">
+      <Filter>Header Files\analytics</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeCoord.h">
+      <Filter>Header Files\cVRP</Filter>
+    </ClInclude>
+    <ClInclude Include="Configuration.h">
+      <Filter>Header Files\cVRP</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultConfig.h">
+      <Filter>Header Files\cVRP</Filter>
+    </ClInclude>
+    <ClInclude Include="ProblemNames.h">
+      <Filter>Header Files\cVRP</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Header Files\cVRP</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Header Files\analytics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

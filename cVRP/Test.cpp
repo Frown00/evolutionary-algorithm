@@ -12,9 +12,10 @@ void Test::addSummary(Summary* t_summary)
 			m_best_route = t_summary->getBestRoute();
 		}
 		else {
-			bool better = t_summary->getBestRoute()->getFitness() < m_best_route->getFitness();
+			Individual* best_route = t_summary->getBestRoute();
+			bool better = best_route->getFitness() < m_best_route->getFitness();
 			if(better) {
-				m_best_route = new Individual(t_summary->getBestRoute());
+				m_best_route = new Individual(best_route);
 			}
 		}
 	}

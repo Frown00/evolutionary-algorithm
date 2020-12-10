@@ -5,8 +5,10 @@ Loader::Loader() {
   this->lines = std::vector<std::string>();
 }
 
-void Loader::readFile() {
-  std::ifstream file(config::FILENAME);
+void Loader::readFile(Configuration* config) {
+  this->lines.clear();
+  std::string path = config->getFilePath();
+  std::ifstream file(path);
   try {
     if(file.is_open()) {
       std::string line;

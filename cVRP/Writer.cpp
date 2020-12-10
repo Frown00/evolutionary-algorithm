@@ -1,6 +1,6 @@
 #include "Writer.h"
 
-void Writer::openEvolutionFile()
+void Writer::openEvolutionFile(EvolutionConfig* t_config)
 {
 	std::string mutation_name = "";
 	std::string mutation_type = "";
@@ -9,120 +9,140 @@ void Writer::openEvolutionFile()
 	std::string selection_name = "";
 	std::string selection_type = "";
 
-	switch(config::MUTATION_TYPE) {
-		case evolution::MutationType::SWAP:
+	switch(t_config->getMutationType()) {
+		case MutationType::SWAP:
 			mutation_name = "S_PM";
 			mutation_type = "SWAP";
 			break;
-		case evolution::MutationType::INVERSION:
+		case MutationType::INVERSION:
 			mutation_name = "I_PM";
 			mutation_type = "INVERSION";
 			break;
 		}
-	switch(config::CROSSOVER_TYPE) {
-		case evolution::CrossoverType::ORDERED:
+	switch(t_config->getCrossoverType()) {
+		case CrossoverType::ORDERED:
 			crossover_name = "O_PX";
 			crossover_type = "ORDERED";
 			break;
-		case evolution::CrossoverType::CYCLE:
+		case CrossoverType::CYCLE:
 			crossover_name = "C_PX";
 			crossover_type = "CYCLE";
 			break;
 		}
-	switch(config::SELECTION_TYPE) {
-		case evolution::SelectionType::TOURNAMENT:
-			selection_name = "T" + std::to_string(config::TOUR);
+	switch(t_config->getSelectionType()) {
+		case SelectionType::TOURNAMENT:
+			selection_name = "T" + std::to_string(t_config->getTour());
 			selection_type = "TOURNAMENT";
 			break;
-		case evolution::SelectionType::ROULETTE:
+		case SelectionType::ROULETTE:
 			selection_name = "R";
 			selection_type = "ROULETTE";
 			break;
 		}
-	std::string filename = config::INSTANCE_PROBLEM + "-"
-		"POP" + std::to_string(config::POP_SIZE) + "-" +
-		"GEN" + std::to_string(config::GEN) + "-" +
-		crossover_name + std::to_string((int)config::P_X) + "-" +
-		mutation_name + std::to_string((int)config::P_M) + "-" +
+	std::string filename = t_config->getInstanceProblem() + "-"
+		"POP" + std::to_string(t_config->getPopSize()) + "-" +
+		"GEN" + std::to_string(t_config->getGenerations()) + "-" +
+		crossover_name + std::to_string((int)t_config->getPX()) + "-" +
+		mutation_name + std::to_string((int)t_config->getPM()) + "-" +
 		selection_name;
 	m_file.open("./results/" + filename + ".csv");
 
 	m_file << "Constrained vehicle routing problem\n";
-	m_file << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
+	m_file << "Instance name: " + t_config->getInstanceProblem() + "\n";
 	m_file << "Evolution parameters\n";
-	m_file << "Population size:;" + std::to_string(config::POP_SIZE) + "\n";
-	m_file << "Generation number:;" + std::to_string(config::GEN) + "\n";
-	m_file << "Mutation type:;" + mutation_type + "; Probability: " + std::to_string(config::P_M) + "\n";
-	m_file << "Crossover type:;" + crossover_type + "; Probability: " + std::to_string(config::P_X) + "\n";
+	m_file << "Population size:;" + std::to_string(t_config->getPopSize()) + "\n";
+	m_file << "Generation number:;" + std::to_string(t_config->getGenerations()) + "\n";
+	m_file << "Mutation type:;" + mutation_type + "; Probability: " + std::to_string(t_config->getPM()) + "\n";
+	m_file << "Crossover type:;" + crossover_type + "; Probability: " + std::to_string(t_config->getPX()) + "\n";
 	m_file << "Selection type:;" + selection_type;
-	if(config::SELECTION_TYPE == evolution::SelectionType::TOURNAMENT) {
-		m_file << ";Parameter: " + std::to_string(config::TOUR) + "\n";
+	if(t_config->getSelectionType() == SelectionType::TOURNAMENT) {
+		m_file << ";Parameter: " + std::to_string(t_config->getTour()) + "\n";
 	}
 	else {
 		m_file << "\n";
 	}
 }
 
-void Writer::openTabuFile()
+void Writer::openTabuFile(TabuConfig* t_config)
 {
 	std::string mutation_name = "";
 	std::string mutation_type = "";
-	switch (config::MUTATION_TYPE) {
-		case evolution::MutationType::SWAP:
+	switch (t_config->getNeighbourhoodType()) {
+		case MutationType::SWAP:
 			mutation_name = "SWAP";
 			mutation_type = "SWAP";
 			break;
-		case evolution::MutationType::INVERSION:
+		case MutationType::INVERSION:
 			mutation_name = "INVERSION";
 			mutation_type = "INVERSION";
 			break;
 		}
-	std::string filename = config::INSTANCE_PROBLEM + "-tabu_search-" +
-		"ITER" + std::to_string(config::ITERATIONS) + "-" +
-		"N" + std::to_string(config::NEIGHBOURS) + "-" +
-		"TS" + std::to_string(config::TABU_SIZE) + "-" +
+	std::string filename = t_config->getInstanceProblem() + "-tabu_search-" +
+		"ITER" + std::to_string(t_config->getIterations()) + "-" +
+		"N" + std::to_string(t_config->getNeighbours()) + "-" +
+		"TS" + std::to_string(t_config->getTabuSize()) + "-" +
 		mutation_name;
 	m_file.open("./results/" + filename + ".csv");
 	m_file << "Constrained vehicle routing problem\n";
-	m_file << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
+	m_file << "Instance name: " + t_config->getInstanceProblem() + "\n";
 	m_file << "Tabu search parameters\n";
-	m_file << "Iterations:;" + std::to_string(config::ITERATIONS) + "\n";
-	m_file << "Neighbours:;" + std::to_string(config::NEIGHBOURS) + "\n";
-	m_file << "Tabu size:;" + std::to_string(config::TABU_SIZE) + "\n";
+	m_file << "Iterations:;" + std::to_string(t_config->getIterations()) + "\n";
+	m_file << "Neighbours:;" + std::to_string(t_config->getNeighbours()) + "\n";
+	m_file << "Tabu size:;" + std::to_string(t_config->getTabuSize()) + "\n";
 	m_file << "Neighbour operation:;" + mutation_type + "\n";
 }
 
-void Writer::openAnealingFile()
+void Writer::openAnealingFile(SAConfig* t_config)
 {
 	std::string mutation_name = "";
 	std::string mutation_type = "";
-	switch (config::MUTATION_TYPE) {
-	case evolution::MutationType::SWAP:
+	switch (t_config->getNeighbourhoodType()) {
+	case MutationType::SWAP:
 		mutation_name = "SWAP";
 		mutation_type = "SWAP";
 		break;
-	case evolution::MutationType::INVERSION:
+	case MutationType::INVERSION:
 		mutation_name = "INVERSION";
 		mutation_type = "INVERSION";
 		break;
 	}
-	std::string filename = config::INSTANCE_PROBLEM + "-annealing-" +
-		"ITER" + std::to_string(config::ITERATIONS_SA) + "-" +
-		"N" + std::to_string(config::NEIGHBOURS_SA) + "-" +
-		"T_START" + std::to_string(config::TEMP_START) + "-" +
-		"T_STOP" + std::to_string(config::TEMP_STOP) + "-" +
-		"C_R" + std::to_string(config::COOLING_RATE) + "-" +
+	std::string filename = t_config->getInstanceProblem() + "-annealing-" +
+		"ITER" + std::to_string(t_config->getIterations()) + "-" +
+		"N" + std::to_string(t_config->getNeighbours()) + "-" +
+		"T_START" + std::to_string(t_config->getTempStart()) + "-" +
+		"T_STOP" + std::to_string(t_config->getTempStop()) + "-" +
+		"C_R" + std::to_string(t_config->getCoolingRate()) + "-" +
 		mutation_name;
 	m_file.open("./results/" + filename + ".csv");
 	m_file << "Constrained vehicle routing problem\n";
-	m_file << "Instance name: " + config::INSTANCE_PROBLEM + "\n";
+	m_file << "Instance name: " + t_config->getInstanceProblem() + "\n";
 	m_file << "Simulated annealing parameters\n";
-	m_file << "Iterations:;" + std::to_string(config::ITERATIONS) + "\n";
-	m_file << "Neighbours:;" + std::to_string(config::NEIGHBOURS_SA) + "\n";
-	m_file << "Temperature start:;" + std::to_string(config::TEMP_START) + "\n";
-	m_file << "Temperature stop:;" + std::to_string(config::TEMP_STOP) + "\n";
-	m_file << "Cooling rate:;" + std::to_string(config::COOLING_RATE) + "\n";
+	m_file << "Iterations:;" + std::to_string(t_config->getIterations()) + "\n";
+	m_file << "Neighbours:;" + std::to_string(t_config->getNeighbours()) + "\n";
+	m_file << "Temperature start:;" + std::to_string(t_config->getTempStart()) + "\n";
+	m_file << "Temperature stop:;" + std::to_string(t_config->getTempStop()) + "\n";
+	m_file << "Cooling rate:;" + std::to_string(t_config->getCoolingRate()) + "\n";
 	m_file << "Neighbour operation:;" + mutation_type + "\n";
+}
+
+void Writer::openOverallFile(std::string name)
+{
+	m_file.open("./overall/" + name + ".csv");
+	m_file << "Constrained vehicle routing problem\n";
+	m_file << "File name: " + name + "\n";
+}
+
+void Writer::saveOverall(std::vector<std::string> problems, std::vector<Summary*> t_overall)
+{
+	m_file << "Instance;Best;Worst;Average;Std\n";
+	for (int i = 0; i < problems.size(); i++) {
+		m_file << problems[i] + ";" +
+			std::to_string(t_overall[i]->getBest()) + ";" +
+			std::to_string(t_overall[i]->getWorst()) + ";" +
+			std::to_string(t_overall[i]->getAverage()) + ";" +
+			std::to_string(t_overall[i]->getStd()) + "\n";
+	}
+	
 }
 
 void Writer::saveGreedy(Summary* t_greedy)
@@ -165,21 +185,22 @@ void Writer::saveEvolution(Test* t_evolution)
 	}
 }
 
-void Writer::saveTabu(std::vector<Summary*> t_tabu)
+void Writer::saveTabu(Test* t_tabu)
 {
+	std::vector<Summary*> iterations = t_tabu->getSummaries();
 	m_file << "\nTabu search solution\n";
 	m_file << "Iteration;Best;Worst;Average;Best Ever;Std\n";
-	double best_ever = t_tabu[0]->getBest();
-	for (int i = 0; i < t_tabu.size(); i++) {
-		if (t_tabu[i]->getBest() < best_ever)
-			best_ever = t_tabu[i]->getBest();
+	double best_ever = iterations[0]->getBest();
+	for (int i = 0; i < iterations.size(); i+=2) {
+		if (iterations[i]->getBest() < best_ever)
+			best_ever = iterations[i]->getBest();
 		m_file <<
 			std::to_string(i) + ";" +
-			std::to_string(t_tabu[i]->getBest()) + ";" +
-			std::to_string(t_tabu[i]->getWorst()) + ";" +
-			std::to_string(t_tabu[i]->getAverage()) + ";" +
+			std::to_string(iterations[i]->getBest()) + ";" +
+			std::to_string(iterations[i]->getWorst()) + ";" +
+			std::to_string(iterations[i]->getAverage()) + ";" +
 			std::to_string(best_ever) + ";" +
-			std::to_string(t_tabu[i]->getStd()) + "\n";
+			std::to_string(iterations[i]->getStd()) + "\n";
 	}
 }
 
@@ -189,7 +210,7 @@ void Writer::saveAnealing(Test* t_anealing)
 	m_file << "\nSimulated annealing solution\n";
 	m_file << "Iteration;Best;Best Ever;Std\n";
 	double best_ever = iterations[0]->getBest();
-	for (int i = 0; i < iterations.size(); i++) {
+	for (int i = 0; i < iterations.size(); i+=100) {
 		if(iterations[i]->getBest() < best_ever)
 			best_ever = iterations[i]->getBest();
 		m_file <<
